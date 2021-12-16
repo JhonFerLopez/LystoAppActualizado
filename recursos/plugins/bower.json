@@ -1,0 +1,30 @@
+{
+  "name": "plugins",
+  "authors": [
+    "milevis <mile123...>"
+  ],
+  "description": "",
+  "main": "",
+  "license": "MIT",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap-social": "~4.8.0",
+    "datatables-plugins": "~1.10.16",
+    "datatables-responsive": "~1.0.3",
+    "flot.tooltip": "~0.8.4",
+    "flot": "~0.8.3",
+    "holderjs": "~2.4.1",
+    "morrisjs": "~0.5.1",
+    "sidebar-nav": "metisMenu#~1.1.3",
+    "chosen": "^1.7.0",
+    "datepicker": "*",
+    "bootstrap": "^3.3.7"
+  }
+}
