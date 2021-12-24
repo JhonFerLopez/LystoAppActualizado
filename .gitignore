@@ -1,7 +1,6 @@
 .DS_Store
 .htaccess
 application/cache/*
-/dist/*
 node_modules/
 !application/cache/index.html
 !application/cache/.htaccess
@@ -39,7 +38,6 @@ user_guide_src/cilexer/pycilexer.egg-info/*
 package-lock.json
 
 .idea/
-dist/
 package-lock.json
 
 .credentials.json
