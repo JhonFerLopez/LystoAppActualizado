@@ -1,0 +1,60 @@
+version: "3.7"
+services:
+  lystosas-backend:
+    build:
+      args:
+        user: lystosas
+        uid: 1000
+      context: .
+      dockerfile: Dockerfile
+    image: lystosas-image
+    container_name: lystosas-backend
+    tty: true
+    working_dir: /var/www/
+    volumes:
+      - ./../:/var/www
+      - ./compose/php/uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
+    networks:
+      - lystosas
+
+  lystosas-db:
+    image: mysql:5.7
+    platform: linux/amd64
+    container_name: lystosas-db
+    tty: true
+    volumes:
+      - dbdata-lystosas:/var/lib/mysql
+      - ./compose/mysql/my.cnf:/etc/mysql/my.cnf
+    environment:
+      #MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_DATABASE: lystosas
+      MYSQL_ROOT_PASSWORD: lystosas.*123
+      MYSQL_PASSWORD: lystosas.*123
+      MYSQL_USER: lystosas
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    ports:
+      - 3306:3306
+    networks:
+      - lystosas
+
+  lystosas-nginx:
+    image: nginx:1.17-alpine
+    container_name: lystosas-nginx
+    tty: true
+    depends_on:
+      - lystosas-backend
+      - lystosas-db
+    ports:
+      - 8081:80
+    volumes:
+      - ./../:/var/www
+      - ./compose/nginx:/etc/nginx/conf.d
+    networks:
+      - lystosas
+
+volumes:
+  dbdata-lystosas:
+networks:
+  lystosas:
+    driver: bridge

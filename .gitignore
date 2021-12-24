@@ -24,6 +24,7 @@ user_guide_src/cilexer/pycilexer.egg-info/*
 #-------------------------
 /nbproject/
 .idea/*
+.vscode
 
 ## Sublime Text cache files
 *.tmlanguage.cache
@@ -36,9 +37,6 @@ user_guide_src/cilexer/pycilexer.egg-info/*
 /application/config/config.php
 
 package-lock.json
-
-
-
 
 .idea/
 dist/
