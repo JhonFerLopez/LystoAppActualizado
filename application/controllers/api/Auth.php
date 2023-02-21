@@ -65,6 +65,8 @@ class Auth extends REST_Controller
             $cedula = $_REQUEST['cedula'];
             $mobile = $_REQUEST['mobile'];
         }
+        echo "proceso terminado";
+        die();
         // Validar
         if (!empty($username) && !empty($password)) {
             $data = array(

@@ -2549,7 +2549,6 @@ var Venta = {
             dataType: 'JSON',
             type: 'POST',
             success: function (data) {
-
                 if (data.errors != undefined) {
                     Utilities.alertModal('No se ha podido enviar la factura electrónica, intente nuevamente', true);
                     $("#fact_elect_errors").html('');
@@ -2577,7 +2576,7 @@ var Venta = {
                      *  */
                     if (data.responseDian == null) {
 
-                        console.log('data.exception', data.exception);
+                        //console.log('data.exception', data.exception);
                         if ((data.exception != '' && data.exception != null)
                             || (data.error != '' && data.error != null)) {
 
@@ -2601,7 +2600,7 @@ var Venta = {
 
                     } else {
 
-
+                        //console.log("ResponseDian");
 
                         /**
                          * 
@@ -2684,67 +2683,65 @@ var Venta = {
 
     /**enviar y firmar factura */
     sendZip(dias, data) {
-        $.ajax({
-            url: baseurl + 'FacturacionElectronica/envioZip',
-            type: 'post',
-            data: { zipName: data.zipName, zipBase64Bytes: data.zipBase64Bytes },
-            dataType: 'json',
-            success: function (datazip) {
+        
+        if (Venta.FACT_E_habilitacionn == '1') {
+            /*** Modo habilitacion */
+            
+            Venta.zipkey = data.zip_key;
 
+            $("#modal_facturacion_electronica").modal('hide');
 
-                if ((datazip.errors != undefined && datazip.errors.length > 0) || datazip == null) {
-                    Utilities.alertModal('No se ha podido enviar la factura electrónica, intente nuevamente', true);
-                    $("#fact_elect_errors").html('');
-                    $("#modal_facturacion_electronica").modal();
-                    if (datazip != null) {
-                        if (Array.isArray(datazip.errors)) {
-                            jQuery.each(datazip.errors, function (i, value) {
-                                var error_div = "  <div class='alert alert-danger'>" + value + "</div>";
+            Utilities.alertModal('Por favor espere mientras SID guarda la venta', 'success');
+            Venta.procesaVenta(dias, 0);// TODO PREGUNTAR AL CLIENTE SI QUIERE IMPRIMIR
+
+        } else {
+            /*** modo produccion */
+
+            $.ajax({
+                url: baseurl + 'FacturacionElectronica/envioZip',
+                type: 'post',
+                data: { zipName: data.zip_name, zipBase64Bytes: data.zip_base64_bytes },
+                dataType: 'json',
+                success: function (datazip) {
+
+                    if ((datazip.errors != undefined && datazip.errors.length > 0) || datazip == null) {
+                        Utilities.alertModal('No se ha podido enviar la factura electrónica, intente nuevamente', true);
+                        $("#fact_elect_errors").html('');
+                        $("#modal_facturacion_electronica").modal();
+                        if (datazip != null) {
+                            if (Array.isArray(datazip.errors)) {
+                                jQuery.each(datazip.errors, function (i, value) {
+                                    var error_div = "  <div class='alert alert-danger'>" + value + "</div>";
+                                    $("#fact_elect_errors").append(error_div);
+                                });
+                            } else {
+                                var error_div = "  <div class='alert alert-danger'>" + datazip.errors + "</div>";
                                 $("#fact_elect_errors").append(error_div);
-                            });
+                            }
                         } else {
-                            var error_div = "  <div class='alert alert-danger'>" + datazip.errors + "</div>";
+                            var error_div = "  <div class='alert alert-danger'>Ha ocurrido un error</div>";
                             $("#fact_elect_errors").append(error_div);
                         }
-                    } else {
-                        var error_div = "  <div class='alert alert-danger'>Ha ocurrido un error</div>";
-                        $("#fact_elect_errors").append(error_div);
-                    }
 
-                    Utilities.hiddePreloader();
-                } else {
-
-                    let zipkey = null;
-                    zipkey = datazip.responseDian.Envelope.Body.SendTestSetAsyncResponse.SendTestSetAsyncResult.ZipKey;
-
-                    Venta.zipkey = zipkey;
-                    if (Venta.FACT_E_habilitacionn == '1') {
-                        /*** Modo habilitacion */
-
-                        $("#modal_facturacion_electronica").modal('hide');
-
-                        Utilities.alertModal('Por favor espere mientras SID guarda la venta', 'success');
-                        Venta.procesaVenta(dias, 0);// TODO PREGUNTAR AL CLIENTE SI QUIERE IMPRIMIR
-
+                        Utilities.hiddePreloader();
                     } else {
 
+                        let zipkey = null;
+                        zipkey = datazip.zip_key;
+                        Venta.zipkey = zipkey;
+                        
                         /*** modo produccion */
-
                         if (zipkey != null && zipkey != '' && zipkey != undefined) {
                             Venta.statusZip(dias, zipkey);
                         }
+                        
                     }
 
                 }
 
+            })
 
-
-
-
-
-            }
-
-        })
+        }
     },
 
     statusZip(dias, ZipKey) {
@@ -2757,24 +2754,28 @@ var Venta = {
             success: function (datazip) {
                 Venta.fe_status = 'ENVIADO';
 
-                Venta.XmlFileName = datazip.responseDian.Envelope.Body.GetStatusZipResponse.GetStatusZipResult.DianResponse.XmlFileName;
-                var is_valid = datazip.responseDian.Envelope.Body.GetStatusZipResponse.GetStatusZipResult.DianResponse.IsValid;
+                Venta.XmlFileName = datazip.xml_name;
+                var is_valid = datazip.is_valid;
                 if (is_valid === "false") {
                     Utilities.alertModal('La consulta de status de la factura electronica enviada ha devuelto error', true);
                     $("#fact_elect_errors").html('');
                     $("#modal_facturacion_electronica").modal();
-                    if (Array.isArray(datazip.responseDian.Envelope.Body.GetStatusZipResponse.GetStatusZipResult.DianResponse.ErrorMessage)) {
-                        jQuery.each(datazip.responseDian.Envelope.Body.GetStatusZipResponse.GetStatusZipResult.DianResponse.ErrorMessage, function (i, value) {
+                    if (Array.isArray(datazip.errors_messages)) {
+                        jQuery.each(datazip.errors_messages, function (i, value) {
                             var error_div = "  <div class='alert alert-danger'>" + value + "</div>";
                             $("#fact_elect_errors").append(error_div);
                         });
+
+                        var error_div = "  <div class='alert alert-danger'>" + datazip.status_description + "</div>";
+                        $("#fact_elect_errors").append(error_div);
+
                     } else {
 
                         let errMsg = '';
-                        if (datazip.responseDian.Envelope.Body.GetStatusZipResponse.GetStatusZipResult.DianResponse.ErrorMessage != undefined) {
-                            errMsg = datazip.responseDian.Envelope.Body.GetStatusZipResponse.GetStatusZipResult.DianResponse.ErrorMessage;
+                        if (datazip.errors_messages != undefined) {
+                            errMsg = datazip.errors_messages;
                         }
-                        errMsg = errMsg + " " + datazip.responseDian.Envelope.Body.GetStatusZipResponse.GetStatusZipResult.DianResponse.StatusDescription;
+                        errMsg = errMsg + " " + datazip.status_description;
 
 
                         var error_div = "  <div class='alert alert-danger'>" + errMsg + "</div>";
@@ -2791,9 +2792,9 @@ var Venta = {
 
                 } else {
                     $("#modal_facturacion_electronica").modal('hide');
-                    Venta.XmlFileName = datazip.responseDian.Envelope.Body.GetStatusZipResponse.GetStatusZipResult.XmlFileName;
+                    //Venta.XmlFileName = datazip.responseDian.Envelope.Body.GetStatusZipResponse.GetStatusZipResult.XmlFileName;
 
-                    Utilities.alertModal(datazip.responseDian.Envelope.Body.GetStatusZipResponse.GetStatusZipResult.StatusMessage, 'success');
+                    Utilities.alertModal(datazip.status_message, 'success');
                     Utilities.alertModal('Por favor espere mientras SID guarda la venta', 'success');
                     Venta.procesaVenta(dias, 0);// TODO PREGUNTAR AL CLIENTE SI QUIERE IMPRIMIR
                 }

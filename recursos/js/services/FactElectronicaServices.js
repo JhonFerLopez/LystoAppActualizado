@@ -19,6 +19,7 @@ var FactElectronicaServices = {
     },
 
     registrarSoftare: function (data) {
+        console.log(baseurl);
         return $.ajax({	//create an ajax request to load_page.php
             type: "POST",
             data: data,

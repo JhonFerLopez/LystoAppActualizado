@@ -1320,7 +1320,6 @@ var Producto = {
                     var authajax = SecurityService.login('PROSODE', 'SysCalVE87901.-', domain);
                     //  console.log(authajax);
                     //TODO HAY QUE HACER EL MODULO DE SEGURIDAD COMPLETO DONDE SE AUTORICE EL USO DEL API Y LE RETORNE UN USUARIO Y PASSWORD EL CUAL SE ALAMACENARA EN BD Y SE USARA AQUI
-
                     authajax.success(function (data) {
                         sessionStorage["api_drogueria_" + drogueria_id] = data.api_key;
                         TablesDatatablesLazzy.init(domain + ProductoService.urlApi + '/dataTables', 0, 'table', {
@@ -1329,6 +1328,11 @@ var Producto = {
                             stock: Producto.stock,
                             'x-api-key': data.api_key
                         });
+                    });
+                    authajax.error(function (request, status, error) {
+                        console.log(request.responseText);
+                        console.log(status);
+                        console.log(error);
                     });
                 } else {
                     TablesDatatablesLazzy.init(domain + ProductoService.urlApi + '/dataTables', 0, 'table', {

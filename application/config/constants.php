@@ -228,9 +228,11 @@ define('LLEGANDO_DOMICILIO', 'LLEGANDO'); //CUANDO RETORNA DE ENTREGAR LOS DOMIC
 define('LOG_INSERT', 'INSERT');
 define('LOG_UPDATE', 'UPDATE');
 define('LOG_DELETE', 'DELETE');
-define('API_ENDPOINT', 'https://apidian.sidroguerias.com');
+#define('API_ENDPOINT', 'https://apidian.sidroguerias.com');
+define('API_ENDPOINT', 'https://business-group.apifacturacionelectronica.xyz');
 define('API_ENDPOINT_LATAM', 'https://facturalatam.sidroguerias.com');
-define('API_ENV_TOKEN', 'aP2wVgY1tiXGt3e7spikzKwvjQ28Re66OaokxDvFtKTjmm5ADcIS0sXOy9cUgO9KYazejwo8MOaR7uOd');
+#define('API_ENV_TOKEN', 'aP2wVgY1tiXGt3e7spikzKwvjQ28Re66OaokxDvFtKTjmm5ADcIS0sXOy9cUgO9KYazejwo8MOaR7uOd');
+define('API_ENV_TOKEN', 'DL9SAWimXeB5zH2pMcgXLBcocje2pvfETsGIBrYBeCnZi5et4ucVBkpr1CjJhZ5QpCoAwZiAY5vuoUIU');
 
 
 

@@ -84,8 +84,6 @@ class facturacionElectronica extends MY_Controller
         $data['listing'] = $this->get_listing();
         $data['resoluciones'] = $this->get_resolutions();
 
-
-
         $dataCuerpo['cuerpo'] = $this->load->view('menu/facturacion_electronica/resolucion', $data, true);
         if ($this->input->is_ajax_request()) {
             echo $dataCuerpo['cuerpo'];
@@ -158,7 +156,7 @@ class facturacionElectronica extends MY_Controller
 
         $FACT_E_API_DESTINO = $this->session->userdata('FACT_E_API_DESTINO');
         $base_url = $FACT_E_API_DESTINO  == 'SOENAC' ? API_ENDPOINT : API_ENDPOINT_LATAM;
-        $url = "https://apidian.sidroguerias.com/api/ubl2.1/config/multiple-resolutions";
+        $url = $base_url . "/api/ubl2.1/config/resolutions";
 
         // append the header putting the secret key and hash
         $api_token = $this->session->userdata('FACT_E_API_TOKEN');
@@ -386,14 +384,15 @@ class facturacionElectronica extends MY_Controller
             $FACT_E_API_DESTINO = $this->session->userdata('FACT_E_API_DESTINO');
             $base_url = $FACT_E_API_DESTINO  == 'SOENAC' ? API_ENDPOINT : API_ENDPOINT_LATAM;
 
-            $url =  $base_url  . "/api/ubl2.1/config/multiple-resolutions";
+            //$url =  $base_url  . "/api/ubl2.1/config/multiple-resolutions";
+            $url =  $base_url  . "/api/ubl2.1/config/resolution";
             $method = "POST";
             if ($FACT_E_resolucion_actualizar != false) {
                 $url =  $base_url  . "/api/ubl2.1/config/resolution";
                 $method = "PUT";
             }
             if (!empty($FACT_E_RESOLUCION_resolution_id)) {
-                $url =  $base_url  . "/api/ubl2.1/config/multiple-resolutions/" . $FACT_E_RESOLUCION_resolution_id;
+                $url =  $base_url  . "/api/ubl2.1/config/resolution/" . $FACT_E_RESOLUCION_resolution_id;
                 $method = "PUT";
             }
 
@@ -452,7 +451,7 @@ class facturacionElectronica extends MY_Controller
             $FACT_E_API_DESTINO = $this->session->userdata('FACT_E_API_DESTINO');
             $base_url = $FACT_E_API_DESTINO  == 'SOENAC' ? API_ENDPOINT : API_ENDPOINT_LATAM;
 
-            $url =  $base_url  . "/api/ubl2.1/config/multiple-resolutions/" . $id;
+            $url =  $base_url  . "/api/ubl2.1/config/resolution/" . $id;
             $method = 'DELETE';
 
 
@@ -1519,6 +1518,7 @@ class facturacionElectronica extends MY_Controller
                             $request_headers[] = 'Content-Type: application/json';
                             $request_headers[] = 'Accept: application/json';
                             $request_headers[] = 'Authorization: Bearer ' . $api_token;
+                            
                             $ch = curl_init();
 
                             curl_setopt($ch, CURLOPT_POST, 1);
@@ -1554,7 +1554,7 @@ class facturacionElectronica extends MY_Controller
                 }
             }
         } catch (Exception $e) {
-            $result = array('error' => $e->getMessage(), 'line'=>$e->getLine());
+            $result = array('error' => $e->getMessage(), 'line' => $e->getLine());
             echo json_encode($result);
         }
     }
@@ -2266,7 +2266,7 @@ class facturacionElectronica extends MY_Controller
                             'type_document_identification_id' => !empty($ventas0->type_document_identification_id) ? $ventas0->type_document_identification_id : $cliente->type_document_identification_id,
                             'type_organization_id' => !empty($ventas0->type_organization_id) ? $ventas0->type_organization_id : $cliente->type_organization_id,
                             'tax_detail_id' => !empty($ventas0->tax_detail_id) ? $ventas0->tax_detail_id : $cliente->tax_detail_id,
-                      
+
                         ),
                         'resolution_id' =>  $FACT_E_RESOLUCION_resolucion_id
 
@@ -2666,13 +2666,11 @@ class facturacionElectronica extends MY_Controller
     public
     function sendmail()
     {
-
         $jsonReturn = array('error' => 'Debe ingresar el uuid');
 
         $uuid = $this->input->post('uuid');
         $email = $this->input->post('email');
         $FACT_E_API_TOKEN  = $this->session->userdata('FACT_E_API_TOKEN');
-
 
         if (!empty($uuid)) {
 
@@ -2680,10 +2678,11 @@ class facturacionElectronica extends MY_Controller
             $base_url = $FACT_E_API_DESTINO  == 'SOENAC' ? API_ENDPOINT : API_ENDPOINT_LATAM;
 
             if ($FACT_E_API_DESTINO == 'SOENAC') {
-                $url = $base_url . "/api/ubl2.1/send-mail/" . $uuid;
+                $url = $base_url . "/api/ubl2.1/mail/send/" . $uuid;
             } else {
                 $url = $base_url . "/api/ubl2.1/send-email/" . $uuid;
             }
+
 
 
 
@@ -2695,7 +2694,12 @@ class facturacionElectronica extends MY_Controller
             $request_headers[] = 'Authorization: Bearer ' . $FACT_E_API_TOKEN;
             $ch = curl_init();
 
-            $data = array('to' => array($email));
+            $data = array('to' => [array("email" => $email)]);
+
+            echo json_encode(json_encode($data));
+            echo json_encode($FACT_E_API_TOKEN);
+            echo json_encode($url);
+            
             curl_setopt($ch, CURLOPT_POST, 1);
             curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
             curl_setopt($ch, CURLOPT_URL, $url);
@@ -2768,11 +2772,11 @@ class facturacionElectronica extends MY_Controller
 
                         if ($test != false) {
                             /**modo hablitacion */
-                            $url =  $base_url . "/api/ubl2.1/send-test-set-async/" . $FACT_E_test_set_id;
+                            $url =  $base_url . "/api/ubl2.1/send-zip/" . $FACT_E_test_set_id;
                         } else {
-
+                            $data['sync'] = false;       
                             /**modo produccoin */
-                            $url =  $base_url . "/api/ubl2.1/api/ubl2.1/send-bill-async/";
+                            $url =  $base_url . "/api/ubl2.1/send-zip";
                         }
 
 
