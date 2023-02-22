@@ -29,7 +29,7 @@ class Auth extends REST_Controller
     public function login_get()
     {
         //var_dump($_GET);
-        echo json_encode(array('status' => 'failed'));
+        echo json_encode(array('status' => 'failed login_get'));
         // $this->response(array('status' => 'failed'), 200);
     }
 
@@ -65,8 +65,7 @@ class Auth extends REST_Controller
             $cedula = $_REQUEST['cedula'];
             $mobile = $_REQUEST['mobile'];
         }
-        echo "proceso terminado";
-        die();
+        
         // Validar
         if (!empty($username) && !empty($password)) {
             $data = array(
