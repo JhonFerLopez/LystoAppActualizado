@@ -2683,9 +2683,6 @@ class facturacionElectronica extends MY_Controller
                 $url = $base_url . "/api/ubl2.1/send-email/" . $uuid;
             }
 
-
-
-
             $request_headers = array();
 
 
@@ -2694,11 +2691,16 @@ class facturacionElectronica extends MY_Controller
             $request_headers[] = 'Authorization: Bearer ' . $FACT_E_API_TOKEN;
             $ch = curl_init();
 
-            $data = array('to' => [array("email" => $email)]);
-
+            $to = [];
+            foreach (explode(',',$email) as $key => $value) {
+                $to[] = ['email' => trim($value)];
+            }
+            $data = array('to' => $to);
+            /*
             echo json_encode(json_encode($data));
             echo json_encode($FACT_E_API_TOKEN);
             echo json_encode($url);
+            */
             
             curl_setopt($ch, CURLOPT_POST, 1);
             curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));

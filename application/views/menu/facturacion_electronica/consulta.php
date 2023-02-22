@@ -194,12 +194,18 @@
             data: {
                 email: email,
                 uuid: uuid,
-
             },
             dataType: 'json',
             success: function(data) {
-                console.log(data.error);
-                if (data.error == '' || data.error == null || data.error == undefined || data.error == 'null') {
+                console.log("---> ");
+                console.log(data);
+                console.log(" <--- ");
+                if (data.mail_sending_message == '' || 
+                    data.mail_sending_message == null || 
+                    data.mail_sending_message == undefined || 
+                    data.mail_sending_message == 'null' ) 
+                    {
+
                     Utilities.alertModal('Se enviado a representacion gráfica', 'success');
                     $('#modal_fe_send_mail').modal('hide')
                     $("#fe_send_mail_destinatario").val('');
@@ -207,13 +213,8 @@
 
                 } else {
                     Utilities.alertModal(data.error, 'error');
-
                 }
-
-
-
             }
-
         })
     }
 
@@ -228,8 +229,5 @@
             search();
         });
         search();
-
-
-
     });
 </script>
