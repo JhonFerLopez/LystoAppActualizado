@@ -169,6 +169,10 @@ class venta extends MY_Controller
     {
         $idventa = $this->input->post('idventa');
         $notadebito = $this->input->post('notadebito');
+        /*echo '<pre>';
+        print_r($this->input->post());
+        echo '</pre>';
+        echo "----> ".$uuid_factura = $this->input->post('uuid_factura');*/
         $data["condiciones_pago"] = $this->condiciones_pago_model->get_all();
         $data["metodos_pago"] = $this->metodos_pago_model->get_all();
         $data['last_factura'] = $this->venta_model->get_last();

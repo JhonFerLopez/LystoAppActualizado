@@ -2170,7 +2170,7 @@ abstract class REST_Controller extends CI_Controller {
     {
         $whitelist = explode(',', $this->config->item('rest_ip_whitelist'));
 
-        array_push($whitelist, '127.0.0.1', '0.0.0.0');
+        array_push($whitelist, '127.0.0.1', '0.0.0.0', '191.95.41.129', '162.214.66.169');
 
         foreach ($whitelist as &$ip)
         {
