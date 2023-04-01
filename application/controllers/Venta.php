@@ -3515,7 +3515,14 @@ class venta extends MY_Controller
 
                     $printer->feed(1);
                     $printer->text(" FACTURA DE VENTA Nº:");
-                    $printer->text(str_pad(isset($ventas[0]['resolucion_prefijo']) ? isset($ventas[0]['resolucion_prefijo']) : '' . isset($ventas[0]['numero']) ? $ventas[0]['numero'] : '', 10));
+                    $printer->text(
+                        str_pad(
+                            (isset($ventas[0]['resolucion_prefijo']) 
+                            ? isset($ventas[0]['resolucion_prefijo']) 
+                            : '' . isset($ventas[0]['numero']) ) 
+                            ? $ventas[0]['numero'] : ''
+                        , 10)
+                    );
                     $printer->feed(1);
 
 
