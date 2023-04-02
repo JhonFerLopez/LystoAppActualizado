@@ -94,21 +94,15 @@ class FacturacionElectronica extends REST_Controller
 
 	private function facturas()
 	{
-
 		$data = $this->input->get('data');
 
 		$document_type = isset($data['document_type']) ? $data['document_type'] : $this->input->get('document_type');
-
 		$fechadesde = isset($data['fecha_desde']) ? $data['fecha_desde'] : $this->input->get('fecha_desde');
 		$fechahasta = isset($data['fecha_hasta']) ? $data['fecha_hasta'] : $this->input->get('fecha_hasta');
 		$status = isset($data['status']) ? $data['tipo_document'] : $this->input->get('status');
 		$this->FACT_E_API_TOKEN =  isset($data['FACT_E_API_TOKEN']) ? $data['FACT_E_API_TOKEN'] : $this->input->get('FACT_E_API_TOKEN');
 
 		$where = array('uuid IS NOT NULL' => NULL);
-
-
-
-
 		$tipo_doc = '';
 		switch ($document_type) {
 			case '1':
@@ -128,9 +122,6 @@ class FacturacionElectronica extends REST_Controller
 		if ($fechahasta != "") {
 			$where['date(fe_issue_date) <='] = date('Y-m-d', strtotime($fechahasta));
 		}
-
-
-
 		$where_custom = false;
 
 		$nombre_or = false;
@@ -192,7 +183,7 @@ class FacturacionElectronica extends REST_Controller
 			$where_custom
 		);
 
-		$total_resultados = isset($ventas[0]) ? $ventas[0]->total_afectados : 0;
+		$total_resultados = isset($ventas[0]) ? (isset($ventas[0]->total_afectados)) ? : 0 : 0;
 
 		$new_array_datatable = $this->processResult($tipo_doc, $ventas);
 
@@ -200,44 +191,37 @@ class FacturacionElectronica extends REST_Controller
 		$array['draw'] = $draw; //esto debe venir por post
 		$array['recordsTotal'] = $total_resultados;
 		$array['recordsFiltered'] = $total_resultados; // esto dbe venir por post
-
+		//print("<pre>".print_r($array,true)."</pre>");
 		return $array;
 	}
 
-	
 	private function processResult($tipo_doc, $ventas){
-
 		$new_array_datatable = array();
 		foreach ($ventas as $venta) {
 			$estadoReception = 'EN ESPERA';
-			if (!empty($venta->uuid)) {
+			$issueDate = isset($venta->fecha) ? $venta->fecha : $venta->fe_issue_date;
+			$datetime1 = new DateTime($issueDate);
+			$datetime2 = new DateTime(date('Y-m-d'));
+			$interval = $datetime1->diff($datetime2);
+			$days = $interval->format('%R%a');
+			if (intval($days) > 2) {
+				$estadoReception = 'APROBACIÓN TÁCITA';
+			}
+			if (!empty($venta->uuid) && $venta->uuid != 'null') {
 				$logs = $this->logs($venta->uuid,  $this->FACT_E_API_TOKEN );
-
-				$issueDate = isset($venta->issued_date)?$venta->issued_date:$venta->fe_issue_date;
-				$datetime1 = new DateTime($issueDate);
-				$datetime2 = new DateTime(date('Y-m-d'));
-				$interval = $datetime1->diff($datetime2);
-				$days = $interval->format('%R%a');
-
-				if (intval($days) > 2) {
-					$estadoReception = 'APROBACIÓN TÁCITA';
-				}
-
-				//var_dump($logs);
-				if ($logs[0]['acknowledgment_received'] == '1') {
-					$estadoReception = 'APROBADO POR EL CLIENTE';
-				}
-				if ($logs[0]['acknowledgment_received'] == '0') {
-					$estadoReception = 'RECHAZADO POR EL CLIENTE';
+				if(isset($logs[0]['acknowledgment_received'])){
+					if ($logs[0]['acknowledgment_received'] == '1') {
+						$estadoReception = 'APROBADO POR EL CLIENTE';
+					}
+					if ($logs[0]['acknowledgment_received'] == '0') {
+						$estadoReception = 'RECHAZADO POR EL CLIENTE';
+					}
 				}
 			}
-
-			$numero ='';
-		
 			if(isset($venta->fe_prefijo)){
-				$numero=$venta->fe_prefijo . "-" . $venta->fe_numero;
+				$numero = $venta->fe_prefijo . "-" . $venta->fe_numero;
 			}else{
-				$numero=$venta->prefijo . "-" . $venta->number;
+				$numero = $venta->prefijo . "-" . $venta->number;
 			}
 			$elememt = array(
 				$numero,
@@ -251,7 +235,6 @@ class FacturacionElectronica extends REST_Controller
 			array_push($new_array_datatable, $elememt);
 		}
 		return $new_array_datatable;
-
 	}
 
 	private function notasCredito()

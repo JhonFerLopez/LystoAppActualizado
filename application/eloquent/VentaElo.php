@@ -2,7 +2,7 @@
 
 use \Illuminate\Database\Eloquent\Model as Eloquent;
 
-class   VentaElo extends Eloquent {
+class VentaElo extends Eloquent {
 
     protected $table = "venta"; // table name
     protected $fillable = [
