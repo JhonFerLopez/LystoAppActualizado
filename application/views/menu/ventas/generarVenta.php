@@ -1,7 +1,6 @@
 <?php $ruta = base_url(); ?>
 <?php $disabled = (isset($venta[0])) ? 'disabled' : ''; ?>
 
-
 <div id="inentariocontainer" style="display: none;"></div>
 <input type="hidden" id="producto_cualidad" value="">
 <input type="hidden" id="devolver" value="<?php echo isset($devolver) ? 'true' : 'false'; ?>">
@@ -23,26 +22,17 @@
 <input type="hidden" id="preciosugerido" value="<?php echo isset($preciosugerido) ? 'true' : 'false'; ?>">
 <input type="hidden" id="ALLOW_FACT_E" value="<?php echo $this->session->userdata('FACT_E_ALLOW'); ?>">
 <input type="hidden" id="notadebito" value="<?= $notadebito; ?>">
-
 <input type="hidden" id="resolucion_avisar" value="<?php echo $last_resolucion['resolucion_avisar'] ?>">
 
 <?php
-
-
-$fechavencimiento = strtotime($last_resolucion['resolucion_fech_vencimiento']);
-
-
-$datetime2 = new DateTime(date('Y-m-d', $fechavencimiento));
-$datetime1 = new DateTime(date('Y-m-d'));
-$interval = $datetime1->diff($datetime2);
-$days = intval($interval->format('%R%a'));
-
-
+	$fechavencimiento = strtotime($last_resolucion['resolucion_fech_vencimiento']);
+	$datetime2 = new DateTime(date('Y-m-d', $fechavencimiento));
+	$datetime1 = new DateTime(date('Y-m-d'));
+	$interval = $datetime1->diff($datetime2);
+	$days = intval($interval->format('%R%a'));
 //printf("%d years, %d months, %d days\n", $years, $months, $days);
-
 ?>
 <input type="hidden" id="resolucion_avisar_vencimiento" value="<?= $days ?>">
-
 <input type="hidden" id="desc_global" value="<?php echo isset($venta[0]['desc_global']) ? $venta[0]['desc_global'] : 0 ?>">
 
 <script>
@@ -52,74 +42,75 @@ $days = intval($interval->format('%R%a'));
 
 <!--row -->
 <div class="row">
-    <div class="col-md-12">
-        <div class="white-box">
+  <div class="col-md-12">
+		<div class="white-box">
+			<!-- Progress Bars Wizard Title -->
+			<form method="post" id="frmVenta" action="#" class=''>
+				<input type="hidden" name="url_refresh" id="url_refresh" value="/index">
+        <input type="hidden" id="precio_sugerido" value="0">
+				<input type="hidden" name="diascondicionpagoinput" id="diascondicionpagoinput" 
+					value="<?php echo ( (isset($venta[0]['id_condiciones'])) ? $venta[0]['id_condiciones'] : 0 ) ?>">
+				<input type="hidden" name="fe_payment_form_id" id="fe_payment_form_id" 
+					value="<?php echo ( (isset($venta[0]['fe_payment_form_id'])) ? $venta[0]['fe_payment_form_id'] : 1 ) ?>">
+				<input type="hidden" name="idventa" id="idventa" 
+					value="<?php if(isset($venta[0]['venta_id'])) echo $venta[0]['venta_id'] ?>">
+				<input type="hidden" name="cajero" id="cajero" 
+					value="<?php echo $this->session->userdata("nUsuCodigo"); ?>">
+				<input type="hidden" name="isadmin" id="isadmin" 
+					value="<?php echo $this->session->userdata("admin"); ?>">
+        <input type="hidden" id="venta_status" value="<?= COMPLETADO ?>" name="venta_status">
+				<input type="hidden" id="condicion_pago" value="0" name="condicion_pago">
+				<input type="hidden" id="condicion_pago_id" name="condicion_pago_id">
+        <input type="hidden" id="maneja_descuentos" value="0" name="maneja_descuentos">
+        <input type="hidden" id="maneja_impresion" value="0" name="maneja_impresion">
+        <input type="hidden" id="documento_generar" value="0" name="documento_generar">
+        <input type="hidden" id="afiliado" value="" name="afiliado">
 
-            <!-- Progress Bars Wizard Title -->
-
-
-            <form method="post" id="frmVenta" action="#" class=''>
-
-                <input type="hidden" name="url_refresh" id="url_refresh" value="/index">
-                <input type="hidden" id="precio_sugerido" value="0">
-                <input type="hidden" name="diascondicionpagoinput" id="diascondicionpagoinput" value="<?php if (isset($venta[0]['id_condiciones'])) echo $venta[0]['id_condiciones'];
-                                                                                                        else echo 0; ?>">
-
-                <input type="hidden" name="fe_payment_form_id" id="fe_payment_form_id" value="<?php if (isset($venta[0]['fe_payment_form_id'])) echo $venta[0]['fe_payment_form_id'];
-                                                                                                else echo 1; ?>">
-
-                <input type="hidden" name="idventa" id="idventa" value="<?php if (isset($venta[0]['venta_id'])) echo $venta[0]['venta_id'] ?>">
-
-                <input type="hidden" name="cajero" id="cajero" value="<?php echo $this->session->userdata("nUsuCodigo"); ?>">
-                <input type="hidden" name="isadmin" id="isadmin" value="<?php echo $this->session->userdata("admin"); ?>">
-                <input type="hidden" id="venta_status" value="<?= COMPLETADO ?>" name="venta_status">
-
-
-                <input type="hidden" id="condicion_pago" value="0" name="condicion_pago">
-                <input type="hidden" id="condicion_pago_id" name="condicion_pago_id">
-                <input type="hidden" id="maneja_descuentos" value="0" name="maneja_descuentos">
-                <input type="hidden" id="maneja_impresion" value="0" name="maneja_impresion">
-                <input type="hidden" id="documento_generar" value="0" name="documento_generar">
-                <input type="hidden" id="afiliado" value="" name="afiliado">
-
-
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="row">
-                            <div class="form-group">
-                                <div class="col-md-4">
-                                    <label for="id_vendedor" class="control-label">Vendedor(Ctrl + Q)</label>
-
-                                    <select name="id_vendedor" id="id_vendedor" class='form-control chosen' required="true" <?= $disabled; ?>>
-                                        <option value="">Seleccione</option>
-                                        <?php if (count($vendedores) > 0) : ?>
-                                            <?php foreach ($vendedores as $vendedor) : ?>
-                                                <option value="<?php echo $vendedor['nUsuCodigo']; ?>" <?php if ((isset($venta[0]['id_vendedor']) and $venta[0]['id_vendedor'] == $vendedor['nUsuCodigo']) or (!isset($venta[0]['id_vendedor'])))
-                                                                                                            echo 'selected' ?>> <?php echo $vendedor['nUsuCodigo'] . '-' . $vendedor['nombre']; ?></option>
-                                            <?php endforeach; ?>
-                                        <?php endif; ?>
-                                    </select>
-                                </div>
-
-                                <div class="col-md-3">
-                                    <label for="tipoventa" class="control-label">Tipo de venta(Ctrl + A)</label>
-
-                                    <?php if ($disabled) { ?>
-                                        <input type="hidden" name="tipoventa" id="tipoventa" value="<?= $venta[0]['venta_tipo'] ?>">
-                                    <?php
-
-                                    } ?>
-                                    <select name="tipoventa" id="<?= ($disabled) ? '' : 'tipoventa' ?>" class='form-control chosen' onchange="Venta.getTipoVenta()" required="true" <?= $disabled; ?>>
-                                        <option value="">Seleccione</option>
-                                        <?php if (count($tipos_venta) > 0) : ?>
-                                            <?php foreach ($tipos_venta as $tipoventa) : ?>
-                                                <option value="<?php echo $tipoventa['tipo_venta_id']; ?>" <?php if ((isset($venta[0]['venta_tipo']) and $venta[0]['venta_tipo'] == $tipoventa['tipo_venta_id']) or (!isset($venta[0]['venta_tipo']) && $tipoventa['tipo_venta_nombre'] == 'MOSTRADOR'))
-                                                                                                                echo 'selected' ?>><?php echo $tipoventa['tipo_venta_nombre']; ?></option>
-                                            <?php endforeach; ?>
-                                        <?php endif; ?>
-                                    </select>
-
-                                </div>
+				<div class="row">
+					<div class="col-md-12">
+						<div class="row">
+							<div class="form-group">
+								<div class="col-md-4">
+									<label for="id_vendedor" class="control-label">Vendedor(Ctrl + Q)</label>
+									<select name="id_vendedor" id="id_vendedor" class='form-control chosen' required="true" <?= $disabled; ?>>
+										<option value="">Seleccione</option>
+										<?php if (count($vendedores) > 0) : ?>
+											<?php foreach ($vendedores as $vendedor) : ?>
+												<option value="<?php echo $vendedor['nUsuCodigo']; ?>" 
+													<?php 
+													if ((isset($venta[0]['id_vendedor']) 
+													and $venta[0]['id_vendedor'] == $vendedor['nUsuCodigo']) 
+													or (!isset($venta[0]['id_vendedor'])))
+														echo 'selected' ?> 
+												> 
+													<?php echo $vendedor['nUsuCodigo'] . '-' . $vendedor['nombre']; ?>
+												</option>
+											<?php endforeach; ?>
+										<?php endif; ?>
+									</select>
+								</div>
+								<div class="col-md-3">
+										<label for="tipoventa" class="control-label">Tipo de venta(Ctrl + A)</label>
+										<?php if ($disabled) { ?>
+											<input type="hidden" name="tipoventa" id="tipoventa" value="<?= $venta[0]['venta_tipo'] ?>">
+										<?php } ?>
+										<select name="tipoventa" id="<?= ($disabled) ? '' : 'tipoventa' ?>" class='form-control chosen' onchange="Venta.getTipoVenta()" required="true" <?= $disabled; ?>>
+											<option value="">Seleccione</option>
+											<?php if (count($tipos_venta) > 0) : ?>
+												<?php foreach ($tipos_venta as $tipoventa) : ?>
+													<option value="<?php echo $tipoventa['tipo_venta_id']; ?>" 
+														<?php 
+														if ((isset($venta[0]['venta_tipo']) 
+														and $venta[0]['venta_tipo'] == $tipoventa['tipo_venta_id']) 
+														or (!isset($venta[0]['venta_tipo']) && $tipoventa['tipo_venta_nombre'] == 'MOSTRADOR'))
+															echo 'selected' ?>
+													>
+														<?php echo $tipoventa['tipo_venta_nombre']; ?>
+													</option>
+												<?php endforeach; ?>
+											<?php endif; ?>
+										</select>
+								</div>
 
                                 <div class="col-md-3">
                                     <label for="id_cliente" class="control-label">Cliente(Ctrl + M)</label>
@@ -173,22 +164,17 @@ $days = intval($interval->format('%R%a'));
                                         <option value="3">Factura electrónica de contingencia FACTURADOR</option>
                                         <option value="4" selected>Factura electrónica de contingencia DIAN</option>
                                     </select>
-
                                 </div>
-
                                 <div class=" hidden" id="fact_electronica_contingencia_facturador">
-
                                     <div class="col-md-2">
                                         <label class="custom-control-label" for="customSwitches">Prefio y número de
                                             documento</label>
                                         <input type="text" name="fe_referencia" class="form-control" id="fe_referencia">
-
                                     </div>
                                     <div class="col-md-2">
                                         <label class="custom-control-label" for="customSwitches">Fecha de emisión del
                                             documento</label>
                                         <input type="text" readonly name="fe_referencia_date" class="date form-control" id="fe_referencia_date">
-
                                     </div>
                                 </div>
                             </div>
@@ -196,34 +182,21 @@ $days = intval($interval->format('%R%a'));
                         <?php } ?>
 
                         <div class="row">
-                            <?php if (isset($devolver)) { ?>
-                                <div class="form-group">
-
-
-                                    <div class="col-md-4">
-
-
-
-
-                                        <label for="cliente" class="control-label">Motivo devolucion</label>
-
-                                        <select name="tipo_devolucion" id="tipo_devolucion" class='form-control chosen' required="true">
-                                            <?php if (count($tipos_devolucion) > 0) : ?>
-                                                <?php foreach ($tipos_devolucion as $cl) : ?>
-                                                    <option value="<?php echo $cl['tipo_devolucion_id']; ?>"><?php echo $cl['tipo_devolucion_nombre'] ?></option>
-                                                <?php endforeach; ?>
-                                            <?php endif; ?>
-                                        </select>
-
-
-
-                                    </div>
-
-
-                                </div>
-
-                            <?php } ?>
-                            <br>
+													<?php if (isset($devolver)) { ?>
+														<div class="form-group">
+															<div class="col-md-4">
+																<label for="cliente" class="control-label">Motivo devolucion</label>
+																<select name="tipo_devolucion" id="tipo_devolucion" class='form-control chosen' required="true">
+																	<?php if (count($tipos_devolucion) > 0) : ?>
+																		<?php foreach ($tipos_devolucion as $cl) : ?>
+																			<option value="<?php echo $cl['tipo_devolucion_id']; ?>"><?php echo $cl['tipo_devolucion_nombre'] ?></option>
+																		<?php endforeach; ?>
+																	<?php endif; ?>
+																</select>
+															</div>
+														</div>
+													<?php } ?>
+													<br>
 
                             <?php if (!isset($devolver)) { ?>
                                 <div class="col-md-12">
@@ -491,18 +464,16 @@ $days = intval($interval->format('%R%a'));
                                                 <label class="control-label"><b>Nota:</b></label>
                                             </div>
                                             <div class="col-md-9">
-
                                                 <textarea name="nota" class="form-control"><?= isset($venta[0]['nota']) ? $venta[0]['nota'] : '' ?></textarea>
-
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-md-2">
                                     <div class="row" style="padding-bottom: 20px">
-
                                         <div class="col-md-12">
-                                            <button class="btn btn-success  waves-effect waves-light btn-group-justified" id="terminarventa" type="button"><i class="fa fa-save fa-2x"></i>
+                                            <button class="btn btn-success  waves-effect waves-light btn-group-justified" id="terminarventa" type="button">
+                                                <i class="fa fa-save fa-2x"></i>
                                                 <b> F6 <?= !isset($devolver) ? 'FACTURAR' : 'GUARDAR' ?></b>
                                             </button>
                                         </div>
@@ -870,7 +841,6 @@ $days = intval($interval->format('%R%a'));
 
                     </div>
                     <div class="modal-body" id="modalbodyproducto">
-
                         <div class="span"><strong>Total a pagar $:</strong> <span id="formpagototalapagar"></span></div>
                         <form id="formaspagoform">
                             <div class="row">
@@ -921,8 +891,6 @@ $days = intval($interval->format('%R%a'));
                                 </table>
                         </form>
                     </div>
-
-
                 </div>
                 <div class="modal-footer">
                     <a href="#" class="btn btn-primary" id="aceptarformasdepago">Aceptar</a>
@@ -931,12 +899,8 @@ $days = intval($interval->format('%R%a'));
             </div>
         </div>
     </div>
-
-
     <div class="modal fade" id="mvcotizarVenta" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     </div>
-
-
     <div class="modal fade" id="ventasabiertas" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     </div>
     <div class="modal fade" id="modificarcantidad" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -967,7 +931,6 @@ $days = intval($interval->format('%R%a'));
                         </div>
                     </div>
                 </div>
-
                 <div class="modal-footer">
                     <div class="row">
                         <div class="col-md-12">
@@ -983,8 +946,6 @@ $days = intval($interval->format('%R%a'));
             </div>
         </div>
     </div>
-
-
     <div class="modal fade" id="modal_facturacion_electronica" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -992,16 +953,11 @@ $days = intval($interval->format('%R%a'));
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                     <h4 class="modal-title">Error</h4>
                 </div>
-
                 <div class="modal-body">
-
                     <h3>Se han encontrado los siguientes errores al generar la facturación electrónica:</h3>
-
                     <div id="fact_elect_errors">
-
                     </div>
                 </div>
-
                 <div class="modal-footer">
                     <button type="button" id="reintentar_bn" class="btn btn-success" onclick="Venta.hacerventa(1, 1);">
                         Reintentar
@@ -1012,9 +968,7 @@ $days = intval($interval->format('%R%a'));
                             como venta pendiente
                         </button>
                     <?php
-
                     } ?>
-
                     <button type="button" class="btn btn-default" onclick="$('#modal_facturacion_electronica').modal('hide');">
                         Cancelar
                     </button>
@@ -1022,9 +976,7 @@ $days = intval($interval->format('%R%a'));
             </div>
             <!-- /.modal-content -->
         </div>
-
     </div>
-
 
     <div class="modal fade" id="confirmar_delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog">
@@ -1033,13 +985,9 @@ $days = intval($interval->format('%R%a'));
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                     <h4 class="modal-title">Confirmaci&oacute;n</h4>
                 </div>
-
                 <div class="modal-body">
-
                     <h3>Estas seguro que deseas eliminar este producto?</h3>
-
                 </div>
-
                 <div class="modal-footer">
                     <button type="button" id="eliminar_item" class="btn btn-primary">Confirmar</button>
                     <button type="button" class="btn btn-default" onclick="$('#confirmar_delete').modal('hide');">
@@ -1049,30 +997,20 @@ $days = intval($interval->format('%R%a'));
             </div>
             <!-- /.modal-content -->
         </div>
-
     </div>
     <div class="modal fade" id="agregarclienteventa" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-
     </div>
-
-
-    <input type="hidden" id="base_url" value="<?= base_url() ?>">
-</div>
+        <input type="hidden" id="base_url" value="<?= base_url() ?>">
+    </div>
 </div>
 <div id="mensajeprodcalert" class="myadmin-alert myadmin-alert-icon myadmin-alert-click alert-warning myadmin-alert-bottom alertbottom"><i class="ti-user"></i><span id="mensajeproducto"></span> <a href="#" class="closed">×</a></div>
-
 
 <script>
     $(document).ready(function() {
         $(".date").datepicker({
-            format: 'dd-mm-yyyy'
+					format: 'dd-mm-yyyy'
         });
-
         Venta.init(<?= count($venta) ?>, <?= json_encode($unidades_medida) ?>, <?= json_encode($droguerias) ?>, <?= json_encode($tipos_devolucion) ?>, <?= json_encode($tipos_venta) ?>, <?= json_encode($clientes) ?>, <?= $last_factura['documento_Numero'] ?>);
-
-
         App.sidebar('close-sidebar');
-
-
     });
 </script>

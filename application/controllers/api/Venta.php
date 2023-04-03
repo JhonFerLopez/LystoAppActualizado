@@ -2283,8 +2283,6 @@ join venta D on D.venta_id=dv.id_venta
 
     function ventas_devolver_get()
     {
-
-
         $datajson = array();
         $datas = array();
         $data = $this->input->get('data');
@@ -2296,29 +2294,22 @@ join venta D on D.venta_id=dv.id_venta
         $notadebito = isset($data['notadebito']) ? $data['notadebito'] : false;
 
         $where = array('venta_status' => COMPLETADO);
-
         $where2 = "";
         if ($fechadesde != "") {
             $where['venta.fecha >='] = date('Y-m-d', strtotime($fechadesde)) . " " . date('H:i:s', strtotime('0:0:0'));
         }
-
         if ($fechahasta != "") {
             $where['venta.fecha <='] = date('Y-m-d', strtotime($fechahasta)) . " " . date('H:i:s', strtotime('23:59:59'));
         }
         if ($uuid != false) {
             $where['uuid <>'] = '';
         }
-
-
         if ($venta_status != "") {
             $where['venta_status'] = $venta_status;
         }
-
-
         if ($vendedor != "") {
             $where['id_vendedor'] = $vendedor;
         }
-
         //$where['recibo_pago_cliente.recibo_id'] = NULL;
         $where['total >'] = '0';
 
@@ -2331,7 +2322,6 @@ join venta D on D.venta_id=dv.id_venta
               or documento_Numero LIKE '%" . $buscar . "%' 
               or total LIKE '%" . $buscar . "%')";
         }
-
         $nombre_or = false;
         $where_or = false;
         $nombre_in = false;
@@ -2340,7 +2330,6 @@ join venta D on D.venta_id=dv.id_venta
         $group = 'venta.venta_id';
 
         $select = '*, venta.venta_id, venta.fecha';
-
         $from = "venta";
         $join = array('cliente', 'documento_venta', 'credito', 'historial_pagos_clientes', 'recibo_pago_cliente');
         $campos_join = array(
@@ -2349,7 +2338,6 @@ join venta D on D.venta_id=dv.id_venta
             'credito.id_venta=venta.venta_id',
             'historial_pagos_clientes.venta_id=credito.id_venta',
             'recibo_pago_cliente.recibo_id=historial_pagos_clientes.recibo_id',
-
         );
         $tipo_join = array('left', 'left', 'left', 'left', 'left');
 
@@ -2374,7 +2362,6 @@ join venta D on D.venta_id=dv.id_venta
                 $limit = false;
             }
         }
-
 
         $datas['datos'] = $this->venta_model->traer_by_mejorado(
             $select,
@@ -2401,14 +2388,8 @@ join venta D on D.venta_id=dv.id_venta
         $array = array();
 
         $count = 0;
-
-
         foreach ($datas['datos'] as $data) {
-
-
             $json = array();
-
-
             $numeracion = '';
             if (empty($data['uuid'])) {
                 $numeracion = !empty($data['resolucion_prefijo']) ? $data['resolucion_prefijo']
@@ -2416,35 +2397,28 @@ join venta D on D.venta_id=dv.id_venta
             } else {
                 $numeracion = "<label class='label label-info'> " . $data['fe_prefijo'] . "-" . $data['fe_numero'] . "</label>";
             }
-
-
             $json[] = $data['venta_id'];
             $json[] = $numeracion;
             $json[] = $data['nombres'] . " " . $data['apellidos'];
             $json[] = date('d-m-Y', strtotime($data['fecha']));
             $json[] = $data['total'];
             $json[] = $data['venta_status'];
-
-
             if ($notadebito == false) {
                 $textoaccion = 'Devolver';
             } else {
                 $textoaccion = 'Nota débito';
             }
             $json[] = "<div class=\"btn-group\">
-                                                <a onclick=\"Venta.devolverventa(" . $data['venta_id'] . ", '" . $notadebito . "')\"
-                                                   class='btn btn-outline btn-default waves-effect waves-light tip'><i
-												 
-												   class=\"fa fa-share\"></i> " . $textoaccion . "</a>
-
-                                                <a style=\"cursor:pointer;\"
-                                                   onclick=\"Venta.verVenta(" . $data['venta_id'] . ")\"
-                                                   class='btn btn-outline btn-default waves-effect waves-light tip'
-                                                   title=\"Ver Venta\">
-                                                    <i class=\"fa fa-search\"></i>
-                                                </a>
-
-                                            </div>";
+                        <a onclick=\"Venta.devolverventa(" . $data['venta_id'] . ", '" . $notadebito . "')\"
+                            class='btn btn-outline btn-default waves-effect waves-light tip'>
+                            <i class=\"fa fa-share\"></i> " . $textoaccion . "</a>
+                        <a style=\"cursor:pointer;\"
+                            onclick=\"Venta.verVenta(" . $data['venta_id'] . ")\"
+                            class='btn btn-outline btn-default waves-effect waves-light tip'
+                            title=\"Ver Venta\">
+                            <i class=\"fa fa-search\"></i>
+                        </a>
+                    </div>";
 
             $json['campos_sumar'] = array();
             $json['campos_sumar'][] = 4;
@@ -2452,8 +2426,7 @@ join venta D on D.venta_id=dv.id_venta
             $datajson[] = $json;
             $count++;
         }
-
-
+        //print_r("<pre>".$datajson."</pre>");
         $total = $this->venta_model->traer_by_mejorado(
             $select,
             $from,

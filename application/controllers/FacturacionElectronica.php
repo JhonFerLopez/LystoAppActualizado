@@ -2161,13 +2161,9 @@ class facturacionElectronica extends MY_Controller
                             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
                             $data_result = curl_exec($ch);
                             $status_code = @curl_getinfo($ch, CURLINFO_HTTP_CODE);
-
-
                             if (curl_errno($ch) or curl_error($ch)) {
-
                                 $result = array('error' => curl_error($ch));
                             } else {
-
                                 $transaction = json_decode($data_result, TRUE);
                                 $transaction['number'] = $resolucion['numero'];
                                 $transaction['resolution_id'] = $resolucion['id_resolucion'];
@@ -2829,8 +2825,6 @@ class facturacionElectronica extends MY_Controller
 
     function postProcesNotaCredito()
     {
-
-
         try {
             $uuid = $this->input->post('uuid');
             $number = $this->input->post('number');

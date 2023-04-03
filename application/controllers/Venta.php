@@ -185,31 +185,21 @@ class venta extends MY_Controller
         $data["unidades_medida"] = $this->unidades_model->get_unidades();
         $data["tipos_venta"] = $this->tipo_venta_model->get_all();
         $data["droguerias"] = $this->drogueria_relacionada_model->get_all();
-
         $data["clientes"] = $this->cliente_model->get_all();
-
-
-
         $data['tipos_devolucion'] = array();
-
         //$data["productos"] = $this->pd->select_all_producto();
-
         $data["venta"] = array();
         if ($idventa != FALSE) {
             $data["venta"] = $this->venta_model->obtener_venta($idventa);
             $data["formaspago"] = $this->venta_model->get_formas_pago_by(array('id_venta' => $idventa));
             if ($this->input->post('devolver') == 1) {
                 $data['devolver'] = 1;
-
-                $data['tipos_devolucion'] = $this->tipo_devolucion_model->get_all();
-
+                $data['tipos_devolucion'] = $this->tipo_devolucion_model->get_all($data["venta"][0]['uuid']);
                 $deuda = $data["venta"][0]['dec_credito_montodeuda'] - $data["venta"][0]['dec_credito_montodebito'];
                 $data['deuda'] = is_numeric($deuda) ? floatval($deuda) : false;
             }
         }
-
-        $data['columnasToProd'] = VentaColumnasProductosElo::all();
-
+        $data['columnasToProd'] = VentaColumnasProductosElo::all();        
         $dataCuerpo['cuerpo'] = $this->load->view('menu/ventas/generarVenta', $data, true);
         if ($this->input->is_ajax_request()) {
             echo $dataCuerpo['cuerpo'];
@@ -272,8 +262,6 @@ class venta extends MY_Controller
 
     function registrar_venta()
     {
-
-
         //log_message('error', 'Haciendo venta');
         $devolver = $this->input->post('devolver');
         $notadebito = $this->input->post('notadebito');
@@ -292,12 +280,8 @@ class venta extends MY_Controller
                 $dataresult['result'] = "Debe aperturar una caja para poder continuar";
                 echo json_encode($dataresult);
             } else {
-
-
                 if ($this->input->is_ajax_request()) {
-
                     $config = array(
-
                         array(
                             'field' => 'condicion_pago_id',
                             'label' => 'condicion_pago_id',
@@ -322,7 +306,6 @@ class venta extends MY_Controller
                         ),
                     );
 
-
                     $this->form_validation->set_rules($config);
 
                     $cliente_id = $this->input->post('id_cliente', true);
@@ -336,14 +319,11 @@ class venta extends MY_Controller
                         $descuentoporcentajetotal = (($this->input->post('subtotal', true) + $this->input->post('iva', true)) * $descuporc) / 100;
                     }
 
-
                     if ($this->form_validation->run() == FALSE) :
                         $dataresult['result'] = validation_errors();
-
                     else :
                         if ($_POST['basegravada'] != "" && $_POST['iva'] != "" && $_POST['totApagar'] != "") {
                             $venta = array(
-
                                 'id_cliente' => (!empty($cliente_id) ? $cliente_id : NULL),
                                 'id_vendedor' => $this->input->post('id_vendedor'),
                                 'venta_tipo' => $this->input->post('tipoventa'),

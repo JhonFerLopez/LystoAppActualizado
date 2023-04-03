@@ -22,14 +22,12 @@ class venta_model extends CI_Model
 
     function get_parche_santamonica()
     {
-
-
         $query = "SELECT venta.*, credito.credito_id FROM venta 
-JOIN detalle_venta ON `detalle_venta`.`id_venta`=venta.`venta_id`
-JOIN credito ON credito.`id_venta`=venta.`venta_id`
-JOIN documento_venta ON documento_venta.`id_venta`=venta.`venta_id`
-WHERE DATE(fecha)='2019-03-02' AND `detalle_venta`.`id_producto`=31639
-";
+            JOIN detalle_venta ON `detalle_venta`.`id_venta`=venta.`venta_id`
+            JOIN credito ON credito.`id_venta`=venta.`venta_id`
+            JOIN documento_venta ON documento_venta.`id_venta`=venta.`venta_id`
+            WHERE DATE(fecha)='2019-03-02' AND `detalle_venta`.`id_producto`=31639
+            ";
 
         return $this->db->query($query)->result_array();
     }
@@ -37,10 +35,8 @@ WHERE DATE(fecha)='2019-03-02' AND `detalle_venta`.`id_producto`=31639
 
     function update_credito_parche_santamonica($credito_id, $id_cliente, $fecha)
     {
-
-
         $query = "UPDATE credito SET id_venta=NULL, id_cliente=$id_cliente ,
- credito_fecha='" . $fecha . "' WHERE credito_id=$credito_id";
+            credito_fecha='" . $fecha . "' WHERE credito_id=$credito_id";
 
         echo $query;
         $this->db->query($query);
@@ -1658,14 +1654,9 @@ detalle_venta_backup.id_detalle=detalle_venta_unidad_backup.detalle_venta_id  wh
 
     function updateVentaTipo($venta_cabecera)
     {
-
         $where = array('id_venta' => $venta_cabecera['venta_id']);
-
-
         $queryCredito = $this->getCredito($where);
-
         if (isset($queryCredito['credito_id'])) {
-
             $credito = array(
                 'credito_id' => $queryCredito['credito_id'],
                 'dec_credito_montodeuda' => $venta_cabecera['total'],
@@ -1717,18 +1708,12 @@ detalle_venta_backup.id_detalle=detalle_venta_unidad_backup.detalle_venta_id  wh
         }
     }
 
-
     function insertCredito($credito)
     {
-
         try {
             $this->db->trans_start();
-
             $this->db->insert('credito', $credito);
-
             $this->db->trans_complete();
-
-
             if ($this->db->trans_status() === FALSE) {
                 $this->db->trans_rollback();
                 return false;
@@ -1736,7 +1721,6 @@ detalle_venta_backup.id_detalle=detalle_venta_unidad_backup.detalle_venta_id  wh
                 $this->db->trans_commit();
                 return true;
             }
-
             $this->db->trans_off();
         } catch (Exception $e) {
             log_message('info', $e->getMessage());
@@ -2038,22 +2022,14 @@ WHERE detalle_venta.id_venta='$id' group by detalle_venta.id_detalle");
             $this->db->from($from);
         }
         if ($join != false and $campos_join != false) {
-
             for ($i = 0; $i < count($join); $i++) {
-
                 if ($tipo_join != false) {
-
                     // for ($t = 0; $t < count($tipo_join); $t++) {
-
                     // if ($tipo_join[$t] != "") {
-
                     $this->db->join($join[$i], $campos_join[$i], $tipo_join[$i]);
                     //}
-
                     //}
-
                 } else {
-
                     $this->db->join($join[$i], $campos_join[$i]);
                 }
             }
@@ -2067,36 +2043,29 @@ WHERE detalle_venta.id_venta='$id' group by detalle_venta.id_detalle");
         if ($where_custom != false) {
             $this->db->where($where_custom);
         }
-
         if ($nombre_in != false) {
             for ($i = 0; $i < count($nombre_in); $i++) {
                 $this->db->where_in($nombre_in[$i], $where_in[$i]);
             }
         }
-
         if ($nombre_or != false) {
             for ($i = 0; $i < count($nombre_or); $i++) {
                 $this->db->or_where($where_or);
             }
         }
-
         if ($limit != false) {
             $this->db->limit($limit, $start);
         }
         if ($group != false) {
             $this->db->group_by($group);
         }
-
         if ($order != false) {
             $this->db->order_by($order, $order_dir);
         }
-
         $query = $this->db->get();
-
         //echo $this->db->last_query();
 
         if ($retorno == "RESULT_ARRAY") {
-
             return $query->result_array();
         } elseif ($retorno == "RESULT") {
             return $query->result();
@@ -3572,46 +3541,46 @@ left join producto pd on pd.producto_id = detalle_venta.id_producto
     function obtener_venta($id_venta)
     {
         $querystring = "select v.venta_id, v.uuid, v.fe_prefijo, v.fe_numero, v.fe_issue_date,  v.desc_global, v.total as montoTotal,v.subtotal  as subTotal,v.cambio, sum(tr.descuento) as totaldescuento, 
- v.descuento_porcentaje, v.descuento_valor, v.cajero_id, tr.desc_porcentaje, tr.descuento, tr.desc_porcentaje,tr.total as total_detalle_venta,
- v.total_impuesto as impuesto, v.total_otros_impuestos,  v.pagado,c.direccion as clienteDireccion, c.direccion as clienteDireccionAlt,pd.producto_id, pd.producto_codigo_interno,
- pd.producto_nombre as nombre,pd.costo_unitario,  z.zona_nombre, v.excluido, v.gravado, pd.producto_tipo,
-  pd.producto_id as producto_id, pd.control_inven,  tr.id_detalle,i.id_impuesto, i.tipo_calculo as tipo_impuesto, i.fe_impuesto, oi.fe_impuesto as fe_otro_impuesto,  oi.porcentaje_impuesto as porcentaje_otro_impuesto, 
-  oi.tipo_calculo as tipo_otro_impuesto,  oi.id_impuesto as id_otro_impuesto, tr.otro_impuesto as otro_impuesto_detalle_venta,
- v.fecha as fechaemision, cre.dec_credito_montodeuda, cre.dec_credito_montodebito, resolucion_dian.*,
-p.nombre as vendedor,p.nUsuCodigo as id_vendedor,t.nombre_tipo_documento as descripcion,  t.documento_Numero as numero, t.nombre_tipo_documento,
-c.nombres as cliente, c.apellidos, c.celular, c.id_cliente as cliente_id,c.merchant_registration, c.fe_type_liability,
- c.fe_regime, c.ciudad_id, c.type_document_identification_id,c.type_organization_id,c.tax_detail_id,
- c.email as email_cliente, c.direccion as direccion_cliente,c.telefono as telefonoC1,
- c.identificacion as documento_cliente, cp.id_condiciones, cp.nombre_condiciones, v.venta_status,v.venta_tipo,
- i.porcentaje_impuesto, pd.is_paquete, pd.precio_abierto, pd.fe_type_item_identification_id, tipo_anulacion.tipo_anulacion_nombre, tr.porcentaje_impuesto as porcentaje_impuesto_backup, 
- tr.porcentaje_otro_impuesto as porcentaje_otro_impuesto_backup, 
- (select config_value from configuraciones where config_key='" . EMPRESA_NOMBRE . "') as RazonSocialEmpresa,
-regimen.regimen_nombre as REGIMEN_CONTRIBUTIVO, regimen.genera_iva as regimen_iva,
- (select config_value from configuraciones where config_key='" . REPRESENTANTE_LEGAL . "') as REPRESENTANTE_LEGAL,
- (select config_value from configuraciones where config_key='" . EMPRESA_DIRECCION . "') as DireccionEmpresa,
- (select config_value from configuraciones where config_key='" . EMPRESA_TELEFONO . "') as TelefonoEmpresa, cp.dias,
- (select config_value from configuraciones where config_key='" . NIT . "') as NIT, tipo_venta.tipo_venta_nombre, tipo_venta.numero_copias,  
- tipo_venta.genera_control_domicilios,
- (select abreviatura from unidades_has_producto join unidades on unidades.id_unidad=unidades_has_producto.id_unidad
- where unidades_has_producto.producto_id=pd.producto_id order by unidades.orden desc limit 1) as unidad_minima
-from venta as v
-left join usuario p on p.nUsuCodigo = v.id_vendedor
-left join documento_venta t on t.id_venta = v.venta_id
-left join detalle_venta tr on tr.id_venta = v.venta_id
-left join cliente c on c.id_cliente = v.id_cliente
-left join zonas z on c.id_zona = z.zona_id
-left join venta_anular on venta_anular.id_venta = v.venta_id
-left join tipo_anulacion on venta_anular.tipo_anulacion = tipo_anulacion.tipo_anulacion_id
-left join producto pd on pd.producto_id = tr.id_producto
-left join tipo_venta  on tipo_venta.tipo_venta_id = v.venta_tipo
-left join condiciones_pago cp on cp.id_condiciones = tipo_venta.condicion_pago
-left join regimen  on regimen.regimen_id = v.regimen_contributivo
-left join impuestos i on i.id_impuesto = pd.producto_impuesto
-left join impuestos oi on oi.id_impuesto = pd.otro_impuesto
-left join credito cre on cre.id_venta=v.venta_id
-left join resolucion_dian on resolucion_dian.resolucion_id=t.id_resolucion
+            v.descuento_porcentaje, v.descuento_valor, v.cajero_id, tr.desc_porcentaje, tr.descuento, tr.desc_porcentaje,tr.total as total_detalle_venta,
+            v.total_impuesto as impuesto, v.total_otros_impuestos,  v.pagado,c.direccion as clienteDireccion, c.direccion as clienteDireccionAlt,pd.producto_id, pd.producto_codigo_interno,
+            pd.producto_nombre as nombre,pd.costo_unitario,  z.zona_nombre, v.excluido, v.gravado, pd.producto_tipo,
+            pd.producto_id as producto_id, pd.control_inven,  tr.id_detalle,i.id_impuesto, i.tipo_calculo as tipo_impuesto, i.fe_impuesto, oi.fe_impuesto as fe_otro_impuesto,  oi.porcentaje_impuesto as porcentaje_otro_impuesto, 
+            oi.tipo_calculo as tipo_otro_impuesto,  oi.id_impuesto as id_otro_impuesto, tr.otro_impuesto as otro_impuesto_detalle_venta,
+            v.fecha as fechaemision, cre.dec_credito_montodeuda, cre.dec_credito_montodebito, resolucion_dian.*,
+            p.nombre as vendedor,p.nUsuCodigo as id_vendedor,t.nombre_tipo_documento as descripcion,  t.documento_Numero as numero, t.nombre_tipo_documento,
+            c.nombres as cliente, c.apellidos, c.celular, c.id_cliente as cliente_id,c.merchant_registration, c.fe_type_liability,
+            c.fe_regime, c.ciudad_id, c.type_document_identification_id,c.type_organization_id,c.tax_detail_id,
+            c.email as email_cliente, c.direccion as direccion_cliente,c.telefono as telefonoC1,
+            c.identificacion as documento_cliente, cp.id_condiciones, cp.nombre_condiciones, v.venta_status,v.venta_tipo,
+            i.porcentaje_impuesto, pd.is_paquete, pd.precio_abierto, pd.fe_type_item_identification_id, tipo_anulacion.tipo_anulacion_nombre, tr.porcentaje_impuesto as porcentaje_impuesto_backup, 
+            tr.porcentaje_otro_impuesto as porcentaje_otro_impuesto_backup, 
+            (select config_value from configuraciones where config_key='" . EMPRESA_NOMBRE . "') as RazonSocialEmpresa,
+            regimen.regimen_nombre as REGIMEN_CONTRIBUTIVO, regimen.genera_iva as regimen_iva,
+            (select config_value from configuraciones where config_key='" . REPRESENTANTE_LEGAL . "') as REPRESENTANTE_LEGAL,
+            (select config_value from configuraciones where config_key='" . EMPRESA_DIRECCION . "') as DireccionEmpresa,
+            (select config_value from configuraciones where config_key='" . EMPRESA_TELEFONO . "') as TelefonoEmpresa, cp.dias,
+            (select config_value from configuraciones where config_key='" . NIT . "') as NIT, tipo_venta.tipo_venta_nombre, tipo_venta.numero_copias,  
+            tipo_venta.genera_control_domicilios,
+            (select abreviatura from unidades_has_producto join unidades on unidades.id_unidad=unidades_has_producto.id_unidad
+            where unidades_has_producto.producto_id=pd.producto_id order by unidades.orden desc limit 1) as unidad_minima
+            from venta as v
+            left join usuario p on p.nUsuCodigo = v.id_vendedor
+            left join documento_venta t on t.id_venta = v.venta_id
+            left join detalle_venta tr on tr.id_venta = v.venta_id
+            left join cliente c on c.id_cliente = v.id_cliente
+            left join zonas z on c.id_zona = z.zona_id
+            left join venta_anular on venta_anular.id_venta = v.venta_id
+            left join tipo_anulacion on venta_anular.tipo_anulacion = tipo_anulacion.tipo_anulacion_id
+            left join producto pd on pd.producto_id = tr.id_producto
+            left join tipo_venta  on tipo_venta.tipo_venta_id = v.venta_tipo
+            left join condiciones_pago cp on cp.id_condiciones = tipo_venta.condicion_pago
+            left join regimen  on regimen.regimen_id = v.regimen_contributivo
+            left join impuestos i on i.id_impuesto = pd.producto_impuesto
+            left join impuestos oi on oi.id_impuesto = pd.otro_impuesto
+            left join credito cre on cre.id_venta=v.venta_id
+            left join resolucion_dian on resolucion_dian.resolucion_id=t.id_resolucion
 
-where v.venta_id=" . $id_venta . " group by tr.id_detalle order by v.venta_id desc ";
+            where v.venta_id=" . $id_venta . " group by tr.id_detalle order by v.venta_id desc ";
 
         $query = $this->db->query($querystring);
         //   echo $this->db->last_Query();

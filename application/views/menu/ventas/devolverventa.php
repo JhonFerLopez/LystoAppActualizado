@@ -121,34 +121,21 @@
 <script>
 
     function get_ventas() {
-
-
         var fercha_desde = $("#fecha_desde").val();
         var fercha_hasta = $("#fecha_hasta").val();
         var vendedor = $("#vendedor").val();
         var venta_status = '<?= COMPLETADO?>';
-
-
         TablesDatatablesLazzy.init('<?php echo $ruta ?>api/Venta/ventas_devolver', 0, 'tabla', {
             fecha_desde: fercha_desde,
             fecha_hasta: fercha_hasta,
             vendedor: vendedor,
             venta_status: venta_status,
         }, 'Reporte de participacion en ventas');
-
-
     }
-
-
     $(function () {
-
         TablesDatatables.init();
-
-
         $("#fecha").datepicker({format: 'dd-mm-yyyy'});
-
         get_ventas();
-
     });
 
 

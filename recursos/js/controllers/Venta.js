@@ -447,7 +447,6 @@ var Venta = {
     },
 
     devolverventa: function (id, notadebito) {
-
         return $.ajax({
             url: baseurl + 'venta',
             data: { 'idventa': id, 'devolver': 1, notadebito: notadebito },
@@ -455,13 +454,10 @@ var Venta = {
             success: function (data) {
                 $("#page-content").html(data);
             },
-
             error: function (error) {
                 console.log(error);
             }
         });
-
-
     },
 
     setFocusOnfirstrow: function (json) {
@@ -3398,16 +3394,12 @@ var Venta = {
     },
 
     hacerventa: function (imprimir, facturaelectronica) {
-
-
         var dias = $('#diascondicionpagoinput').val();
         var retorno = Venta.validarCamposVenta(dias);
-
         if (retorno == true) {
             if (dias > 0) {
                 Venta.validarClienteCredito(dias, imprimir, facturaelectronica);
             } else {
-
                 if (facturaelectronica) {
                     if (Venta.devolver == 'true') {
                         if (Venta.notadebito == '1') {
@@ -3415,8 +3407,6 @@ var Venta = {
                         } else {
                             Venta.processNotacredito(dias, imprimir);
                         }
-
-
                     } else {
                         Venta.facturaVentaNacional(dias)
                     }
@@ -3428,19 +3418,12 @@ var Venta = {
                         } else {
                             Venta.processNotacredito(dias, imprimir);
                         }
-
-
                     } else {
                         Venta.procesaVenta(dias, imprimir);
                     }
-
-
                 }
-
             }
         }
-
-
     }
     ,
     postProcessVenta: async function (dataventa, imprimir) {
@@ -4411,14 +4394,11 @@ var Venta = {
          */
         $("#terminarventa").on('click', function () {
             // $("#venta_status").val('GENERADO');
-
             if (Venta.devolver == 'true' && Venta.uuid != undefined && Venta.uuid != '') {
                 Venta.hacerventa(0, 0);
             } else {
                 $("#generarventa").modal('show');
             }
-
-
         });
         $("#terminarventapendiente").on('click', function () {
 
@@ -4648,7 +4628,6 @@ var Venta = {
         this.tipos_devlucion = tipos_devlucion;
         this.tipos_venta = tipos_venta;
         this.devolver = $('#devolver').val();
-
 
         this.uuid = $('#uuid').val();
         if (Venta.devolver != 'true') {
