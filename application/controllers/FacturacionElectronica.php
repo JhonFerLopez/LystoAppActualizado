@@ -81,6 +81,7 @@ class facturacionElectronica extends MY_Controller
         if ($this->session->flashdata('error') != FALSE) {
             $data['error'] = $this->session->flashdata('error');
         }
+        $data['listing2'] = $this->Impuestos_model->get_fe_listings_soenac('type_documents');
         $data['listing'] = $this->get_listing();
         $data['resoluciones'] = $this->get_resolutions();
 
@@ -99,10 +100,6 @@ class facturacionElectronica extends MY_Controller
         if ($this->session->flashdata('error') != FALSE) {
             $data['error'] = $this->session->flashdata('error');
         }
-
-
-
-
         $dataCuerpo['cuerpo'] = $this->load->view('menu/facturacion_electronica/logo', $data, true);
         if ($this->input->is_ajax_request()) {
             echo $dataCuerpo['cuerpo'];
@@ -131,13 +128,11 @@ class facturacionElectronica extends MY_Controller
 
     private function get_listing()
     {
-
-
         $data = [
             'Country' => $this->Impuestos_model->get_fe_countries(),
             'Language' => $this->Impuestos_model->get_fe_languages(),
             'TypeRegime' => $this->Impuestos_model->get_fe_typeregime(),
-            'TypeDocument' => $this->Impuestos_model->get_fe_typedocument(),
+            'TypeDocument' => $this->Impuestos_model->get_fe_listings_soenac('type_documents'),
             'TypeCurrency' => $this->Impuestos_model->get_fe_typecurrency(),
             'Municipality' => $this->Impuestos_model->get_fe_municipalities(),
             'TypeLiability' => $this->Impuestos_model->get_fe_typeliabilities(),

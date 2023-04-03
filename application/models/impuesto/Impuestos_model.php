@@ -12,6 +12,25 @@ class impuestos_model extends CI_Model
         $this->load->database();
     }
 
+    function get_fe_listings_soenac($list = 'taxes', $return = 'OBJECT')
+    {
+        $base_url = API_ENDPOINT;
+        $url = $base_url  . "/api/ubl2.1/listings?tables=".$list;
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 200);
+        $data_result = curl_exec($ch);
+        if (curl_errno($ch) or curl_error($ch)) {
+            $result = array('error' => curl_error($ch));
+        } else {
+            $transaction = json_decode($data_result, TRUE);
+            curl_close($ch);
+            $result = ($return == 'OBJECT') ? json_decode(json_encode($transaction[$list], JSON_FORCE_OBJECT)) : $transaction[$list] ; 
+        }
+        return $result;
+    }
+
     //FE === FACTURACION ELECTRONICA
     function get_fe_impuestos()
     {

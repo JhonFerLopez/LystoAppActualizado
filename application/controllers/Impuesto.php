@@ -32,7 +32,6 @@ class impuesto extends MY_Controller
 
     function form($id = FALSE)
     {
-
         $data = array();
         $fe_impuestos = [];
         if (!empty($this->session->userdata('FACT_E_ALLOW') and $this->session->userdata('FACT_E_ALLOW') === '1')) {
@@ -42,9 +41,6 @@ class impuesto extends MY_Controller
         if ($id != FALSE) {
             $data['impuesto'] = $this->impuestos_model->get_by('id_impuesto', $id);
         }
-
-
-
         $this->load->view('menu/impuesto/form', $data);
     }
 

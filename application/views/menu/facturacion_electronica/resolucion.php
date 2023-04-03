@@ -256,17 +256,23 @@ php artisan key:gen
                 <div class="row">
                     <div class="col-md-3"><label>Tipo de documento:</label></div>
                     <div class="col-md-6">
+                        <?php 
+                            /*echo "<pre>"; 
+                            print_r($listing2);
+                            echo "<hr>";
+                            print_r($listing['TypeDocument']);
+                            echo "</pre>";*/
+                        ?>
                         <select name="FACT_E_RESOLUCION_type_document_id" id="FACT_E_RESOLUCION_type_document_id" class="form-control select2">
                             <?php
-
+                            
                             foreach ($listing['TypeDocument'] as  $value) : ?>
-
-
-                                <option value="<?= $value->id ?>" <?php if ($value->id == $this->session->userdata('FACT_E_RESOLUCION_type_document_id')) echo 'selected' ?>>
-                                    <?= $value->id ?> - <?= $value->name ?></option>
-                            <?php
-
-                            endforeach; ?>
+                                <option value="<?= $value->id ?>" 
+                                    <?php if ($value->id == $this->session->userdata('FACT_E_RESOLUCION_type_document_id')) echo 'selected' ?>
+                                >
+                                    <?= $value->id ?> - <?= $value->name ?>
+                                </option>
+                            <?php endforeach; ?>
                         </select>
                     </div>
 
