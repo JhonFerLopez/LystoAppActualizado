@@ -1515,7 +1515,10 @@ class facturacionElectronica extends MY_Controller
                             $request_headers[] = 'Authorization: Bearer ' . $api_token;
                             
                             $ch = curl_init();
-
+                            //Kerigma
+                            echo json_encode($data);
+                            echo json_encode($url);
+                            die();
                             curl_setopt($ch, CURLOPT_POST, 1);
                             curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
                             curl_setopt($ch, CURLOPT_URL, $url);
@@ -1700,16 +1703,12 @@ class facturacionElectronica extends MY_Controller
         }
         echo json_encode($result);
     }
-
-
-
-
+    
     public
     function notaCredito()
     {
         try {
             $fe_unid_id = 70; // el id de la unidad de medida UNIDAD
-
             $cajero = $this->session->userdata('cajero_id');
             $caja = $this->session->userdata('cajapertura');
             $FACT_E_RESOLUCION_resolucion_id =   $this->session->userdata('FACT_E_RESOLUCION_resolucion_NC');
@@ -1726,17 +1725,13 @@ class facturacionElectronica extends MY_Controller
                 } else {
                     $id = $this->input->post('idventa');
                     $cliente = json_decode($this->input->post('cliente'));
-
                     $test = $this->session->userdata('FACT_E_habilitacionn');
                     $type_document = 5;
                     $resoluciones = $this->get_resolutions($FACT_E_RESOLUCION_resolucion_id); //call function
                     $FACT_E_resolucion_start_in = $this->session->userdata('FACT_E_resolucion_start_credit_note_in'); //call function
                     $resolucion_api = $resoluciones[0]; //POR AHORA VOY A PONER POR DEFECTO LA PRIMERA,
-
                     $resolucion = $this->venta_model->generarnumeroNotaCredito($resolucion_api, $FACT_E_resolucion_start_in);
-
                     $ventas = $this->venta_model->obtener_venta($id);
-
                     $ventas0 = (object) $ventas[0];
 
                     $line_extension_amount_tot = 0; //Valor bruto antes de tributos: Total valor bruto, suma de los valores brutos de las líneas de la factura.
@@ -1746,8 +1741,12 @@ class facturacionElectronica extends MY_Controller
                     $charge_total_amount = 0; //ChargeTotal Amount // AUN NO HAY CARGOS
                     $payable_amount = 0; //Valor Pagable de Factura: Valor total deítems (incluyendo cargos y descuentos anivel de ítems)+valors tributos + valors cargos – valor descuentos – valor anticipos
 
-
                     $data = array(
+                        "discrepancy_response" => array(
+                            "reference" => '',
+                            "correction_concept_id" => '',
+                            "description" => '',
+                        ),
                         "billing_reference" => array(
                             "number" => $ventas0->fe_numero,
                             "uuid" => $ventas0->uuid,
@@ -1772,27 +1771,18 @@ class facturacionElectronica extends MY_Controller
                             'tax_detail_id' => !empty($ventas0->tax_detail_id) ? $ventas0->tax_detail_id : $cliente->tax_detail_id,
                         ),
                         'resolution_id' =>  $FACT_E_RESOLUCION_resolucion_id
-
-
                     );
                     $credit_note_lines = array();
-
-
                     $conteo = 0;
                     $devolucion = $this->input->post('devolver');
                     $impuestos = array();
                     $otros_impuestos = array();
                     $ventadev = array();
                     if ($devolucion === 'true') {
-
                         ////LO DE LA NOTA CREDITO
                         $lst_producto = json_decode($this->input->post('lst_producto'));
-
                         foreach ($lst_producto as $producto_ls) {
-
-
                             //aqui asingo los elementos que vienen de post para que quede como si lo hubiera consultado de venta_model->obtenerventa
-
                             $venta_item = array(
                                 'numero' => $resolucion['numero'], //NUMERACION CONSECUTIVA
                                 'montoTotal' => $this->input->post('totApagar'),
@@ -1807,7 +1797,6 @@ class facturacionElectronica extends MY_Controller
                                 'fe_type_item_identification_id' => $producto_ls->fe_type_item_identification_id,
                                 'fe_impuesto' => $producto_ls->fe_impuesto,
                                 'fe_otro_impuesto' => $producto_ls->fe_otro_impuesto,
-
                             );
                             $unidades_lst = array();
                             $isDev = false;
@@ -1820,7 +1809,6 @@ class facturacionElectronica extends MY_Controller
                             foreach ($producto_ls->unidades as $unidades) {
                                 $descuento_unidad_prorateo = 0;
                                 if ($unidades->cantidad_dev > 0) {
-
                                     $item_dev_sin_iva = floatval($unidades->precio_sin_iva) * floatval($unidades->cantidad_dev);
                                     $item_dev = floatval($unidades->precio) * floatval($unidades->cantidad_dev);
 
@@ -2146,7 +2134,10 @@ class facturacionElectronica extends MY_Controller
                             $request_headers[] = 'Accept: application/json';
                             $request_headers[] = 'Authorization: Bearer ' . $api_token;
                             $ch = curl_init();
-
+                            //Kerigma
+                            echo json_encode($data);
+                            echo json_encode($url);
+                            die();
                             curl_setopt($ch, CURLOPT_POST, 1);
                             curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
                             curl_setopt($ch, CURLOPT_URL, $url);
@@ -2191,9 +2182,7 @@ class facturacionElectronica extends MY_Controller
 
     public function notaDebito()
     {
-
         try {
-
             $fe_unid_id = 70; // el id de la unidad de medida UNIDAD
             $sync =   $this->session->userdata('FACT_E_syncrono');
             $sync = $sync == '1' ? true : false;
@@ -2205,7 +2194,6 @@ class facturacionElectronica extends MY_Controller
                 $dataresult['result'] = "La caja en la que está intentando realizar la operación ya ha sido cerrada por otro usuario. Por favor cierre sessión e ingrese nuevamente para trabajar en otra caja";
                 echo json_encode(array('errors' => [$dataresult['result']]));
             } else {
-
                 if (($caja == '' or $cajero == '')) {
                     $dataresult['result'] = "Debe aperturar una caja para poder continuar";
                     echo json_encode(array('errors' => [$dataresult['result']]));
@@ -2217,15 +2205,9 @@ class facturacionElectronica extends MY_Controller
                     $resoluciones = $this->get_resolutions($FACT_E_RESOLUCION_resolucion_id); //call function
                     $FACT_E_resolucion_start_in = $this->session->userdata('FACT_E_resolucion_start_debit_note_in'); //call function
                     $resolucion_api = $resoluciones[0]; //POR AHORA VOY A PONER POR DEFECTO LA PRIMERA,
-
                     $resolucion = $this->venta_model->generarnumeroNotaDebito($resolucion_api, $FACT_E_resolucion_start_in);
-
-
                     $ventas = $this->venta_model->obtener_venta($id);
-
                     $ventas0 = (object) $ventas[0];
-
-
                     $line_extension_amount_tot = 0; //Valor bruto antes de tributos: Total valor bruto, suma de los valores brutos de las líneas de la factura.
                     $tax_exclusive_amount = 0; // se pone en cero si no hay impuestos //Total Base Imponible (Valor Bruto+CargosDescuentos): Base imponible para el cálculo de los tributos
                     $tax_inclusive_amount = 0; //Total de Valor bruto con tributos Los tributos retenidos son retirados en el cálculo de PayableAmount
@@ -2233,8 +2215,12 @@ class facturacionElectronica extends MY_Controller
                     $charge_total_amount = 0; //ChargeTotal Amount // AUN NO HAY CARGOS
                     $payable_amount = 0; //Valor Pagable de Factura: Valor total deítems (incluyendo cargos y descuentos anivel de ítems)+valors tributos + valors cargos – valor descuentos – valor anticipos
 
-
                     $data = array(
+                        "discrepancy_response" => array(
+                            "reference" => '',
+                            "correction_concept_id" => '',
+                            "description" => '',
+                        ),
                         "billing_reference" => array(
                             "number" => $ventas0->fe_numero,
                             "uuid" => $ventas0->uuid,
@@ -2613,7 +2599,10 @@ class facturacionElectronica extends MY_Controller
                             $request_headers[] = 'Accept: application/json';
                             $request_headers[] = 'Authorization: Bearer ' . $api_token;
                             $ch = curl_init();
-
+                            //Kerigma
+                            echo json_encode($data);
+                            echo json_encode($url);
+                            die();
                             curl_setopt($ch, CURLOPT_POST, 1);
                             curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
                             curl_setopt($ch, CURLOPT_URL, $url);
