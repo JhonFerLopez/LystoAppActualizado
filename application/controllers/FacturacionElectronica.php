@@ -1516,9 +1516,9 @@ class facturacionElectronica extends MY_Controller
                             
                             $ch = curl_init();
                             //Kerigma
-                            echo json_encode($data);
-                            echo json_encode($url);
-                            die();
+                            //echo json_encode($data);
+                            //echo json_encode($url);
+                            //die();
                             curl_setopt($ch, CURLOPT_POST, 1);
                             curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
                             curl_setopt($ch, CURLOPT_URL, $url);
@@ -2135,9 +2135,9 @@ class facturacionElectronica extends MY_Controller
                             $request_headers[] = 'Authorization: Bearer ' . $api_token;
                             $ch = curl_init();
                             //Kerigma
-                            echo json_encode($data);
-                            echo json_encode($url);
-                            die();
+                            //echo json_encode($data);
+                            //echo json_encode($url);
+                            //die();
                             curl_setopt($ch, CURLOPT_POST, 1);
                             curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
                             curl_setopt($ch, CURLOPT_URL, $url);
@@ -2600,9 +2600,9 @@ class facturacionElectronica extends MY_Controller
                             $request_headers[] = 'Authorization: Bearer ' . $api_token;
                             $ch = curl_init();
                             //Kerigma
-                            echo json_encode($data);
-                            echo json_encode($url);
-                            die();
+                            //echo json_encode($data);
+                            //echo json_encode($url);
+                            //die();
                             curl_setopt($ch, CURLOPT_POST, 1);
                             curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
                             curl_setopt($ch, CURLOPT_URL, $url);
