@@ -1058,18 +1058,14 @@ class facturacionElectronica extends MY_Controller
 
                     $impuestos = array();
                     $otros_impuestos = array();
-
-
+                    
                     $id = $this->input->post('id');
                     $nota = $this->input->post('nota');
                     if (!empty($id)) {
                         // esto por ahora no lo estamos usando
-                        $venta = $this->venta_model->obtener_venta($id);
+                        //$venta = $this->venta_model->obtener_venta($id);
                     } else {
-
-
                         /*********BUSCO LA ULTIMA RESOLUCION DE LA DIAN*******/
-
                         $resoluciones = $this->get_resolutions($FACT_E_RESOLUCION_resolucion_id); //call function
                         $FACT_E_resolucion_start_in = $this->session->userdata('FACT_E_resolucion_start_in'); //donde iniciar la resolucion de facturacion electronica #1
                         if ($isContingencia) {
@@ -1081,14 +1077,10 @@ class facturacionElectronica extends MY_Controller
 
                             }
                         }
-
                         $resolucion_api = $resoluciones[0]; //POR AHORA VOY A PONER POR DEFECTO LA PRIMERA,
                         // PERO EN TEORIA DEBERIA PODER IDENTIFICAR POR LA FECHA O ALGO CUAL ES AL RESOCLUCICON ACTUAL
                         $resolucion = $this->venta_model->generarnumeroFacturaElectronica($resolucion_api, $FACT_E_resolucion_start_in);
-
                         //armo la venta con lo que viene de javascript
-
-
                         $venta = array();
                         $lst_producto = json_decode($this->input->post('lst_producto'));
 
@@ -1110,11 +1102,9 @@ class facturacionElectronica extends MY_Controller
                                 'payment_method_id' => 1,
                                 'payment_due_date' => $date,
                                 'duration_measure' => 1,
-
                             );
                             array_push($payments_forms, $payment_form);
                         } else {
-
                             $forma_pagos_i = 0;
                             foreach ($forma_pagos as $formapago) {
                                 $payment_form = array(
@@ -1122,10 +1112,7 @@ class facturacionElectronica extends MY_Controller
                                     'payment_method_id' => 1,
                                     'payment_due_date' => $date,
                                     'duration_measure' => 1,
-
                                 );
-
-
                                 array_push($payments_forms, $payment_form);
                                 $forma_pagos_i++;
                             }
@@ -1133,10 +1120,7 @@ class facturacionElectronica extends MY_Controller
 
                         //var_dump($cliente_post);
                         foreach ($lst_producto as $producto_ls) {
-
-
                             //aqui asingo los elementos que vienen de post para que quede como si lo hubiera consultado de venta_model->obtenerventa
-
                             $venta_item = array(
                                 'numero' => $resolucion['numero'], //NUMERACION CONSECUTIVA
                                 'documento_cliente' => trim($cliente_post->identificacion),
@@ -1166,11 +1150,9 @@ class facturacionElectronica extends MY_Controller
                                 'fe_type_item_identification_id' => $producto_ls->fe_type_item_identification_id,
                                 'fe_impuesto' => $producto_ls->fe_impuesto,
                                 'fe_otro_impuesto' => $producto_ls->fe_otro_impuesto,
-
                             );
                             $unidades_lst = array();
                             foreach ($producto_ls->unidades as $unidades) {
-
                                 $unidad = array(
                                     'precio' => $unidades->precio,
                                     'precio_sin_iva' => $unidades->precio_sin_iva,
@@ -1180,8 +1162,6 @@ class facturacionElectronica extends MY_Controller
                                 array_push($unidades_lst, $unidad);
                             }
                             $venta_item['detalle_unidad'] = $unidades_lst;
-
-
                             if ($producto_ls->porcentaje_impuesto > 0) {
                                 $porcentaje_impuesto = $producto_ls->porcentaje_impuesto;
                                 $current_amount = isset($impuestos[$porcentaje_impuesto]) ? $impuestos[$porcentaje_impuesto]['amount'] : 0;
@@ -1196,32 +1176,23 @@ class facturacionElectronica extends MY_Controller
                             }
 
                             if ($producto_ls->otro_impuesto > 0) {
-
                                 $impuesto_unitario = $producto_ls->otro_impuesto / $producto_ls->unidades[0]->cantidad;
                                 $current_amount = isset($otros_impuestos[$impuesto_unitario])  ? $otros_impuestos[$impuesto_unitario]['amount'] : 0;
                                 $otros_impuestos[$impuesto_unitario] = array(
-
                                     //asumimos que por ahora el impuesto a la bolsa es el unico impuesto fijo, por eso lo hacemos asi
                                     'impuesto' => $producto_ls->otro_impuesto,
                                     'fe_otro_impuesto' => $producto_ls->fe_otro_impuesto,
-
                                     'amount' => ($producto_ls->subtotal - $producto_ls->descuento) + $current_amount,
                                     'per_unit_amount' => $impuesto_unitario
                                 );
                             }
-
-
                             array_push($venta, $venta_item);
                         }
                         // var_dump($venta);
-
-
                     }
-
 
                     if (isset($venta[0])) {
                         //var_dump($venta[0]);
-
                         $venta[0] = (object) $venta[0];
                         $cliente = array(
                             'identification_number' => $venta[0]->documento_cliente,
@@ -1237,30 +1208,21 @@ class facturacionElectronica extends MY_Controller
                             'type_organization_id' => $venta[0]->type_organization_id,
                             'tax_detail_id' => $venta[0]->tax_detail_id,
                             //'country_id' => $venta[0]->id_pais, //TODO HACERLO PARAMETRIZABLE
-
-
                         );
 
                         $allowance_charges = array();
-
-
                         $invoice_lines = array();
-
                         $tax_totals = array();
-
                         if (!empty($id)) {
-
                             $impuestos = $this->venta_model->get_total_impuestos_grouped($id);
                             // LOS OTROS IMPUESTOS, POR AHORA SOLO EL IMPIUESTO A LA BOLSA
                             $otros_impuestos = $this->venta_model->get_total_otros_impuestos_grouped($id);
                         } else {
                         }
-
                         foreach ($impuestos as $impuesto) {
                             if (!is_object($impuesto)) {
                                 $impuesto = (object) $impuesto;
                             }
-
                             $porcentaje_impuesto = $impuesto->porcentaje_impuesto;
                             $taxable_amount = $impuesto->amount;
                             $tax_exclusive_amount += $taxable_amount;
@@ -1269,33 +1231,23 @@ class facturacionElectronica extends MY_Controller
                                 'percent' => $porcentaje_impuesto,
                                 'tax_amount' => round($impuesto->impuesto),
                                 'taxable_amount' => round($taxable_amount), //Base Imponible sobre la que se calcula el valor del tributo En el caso de que el tributo es una porcentaje del valortributable: informar la base imponible en valormonetarioEn el caso de que el tributo es un valor fijo por unidadtributada: informar el número de unidades tributadas
-
                             );
-
                             array_push($tax_totals, $tax);
                         }
-
-
                         foreach ($otros_impuestos as $impuesto) {
-
                             if (!is_object($impuesto)) {
                                 $impuesto = (object) $impuesto;
                             }
-
                             $taxable_amount = $impuesto->amount;
                             // $tax_exclusive_amount += $taxable_amount;
                             $tax = array(
                                 'tax_id' => $impuesto->fe_otro_impuesto,
                                 'tax_amount' => round($impuesto->impuesto),
                                 'taxable_amount' => 0, // en el ejmplo el muchahco puso cero////Base Imponible sobre la que se calcula el valor del tributo  En el caso de que el tributo es una porcentaje del valortributable: informar la base imponible en valormonetarioEn el caso de que el tributo es un valor fijo por unidadtributada: informar el número de unidades tributadas
-
-
                                 'unit_measure_id' => $fe_unid_id, //LA UNIDAD PARA EL CASO DE LAS BOLSAS
                                 'per_unit_amount' => $impuesto->per_unit_amount,
                                 'base_unit_measure' => 1,  //tengo que decir cada cuantas unidades cobro este impuesto, en el caso de las bosas siempre es uno
                             );
-
-
                             array_push($tax_totals, $tax);
                         }
 
@@ -1303,29 +1255,17 @@ class facturacionElectronica extends MY_Controller
                         $line_extension_amount_tot = 0;
                         $tax_inclusive_amount = 0;
                         foreach ($venta as $item) {
-
-
                             $item = (object) $item;
-
                             $porcentaje_impuesto = $item->porcentaje_impuesto;
                             $otro_impuesto_fijo = $item->otro_impuesto_detalle_venta;
-
                             $descuento_producto = $item->totaldescuento;
-
-
                             $total_producto = $item->total_detalle_venta;
-
                             foreach ($item->detalle_unidad as $item_unidad) {
-
                                 $item_unidad = (object) $item_unidad;
-
                                 if ($item_unidad->cantidad > 0) {
                                     $descuento_unidad = 0;
-
                                     $tax_totals_line = array();
-
                                     $allowance_charges_line = array();
-
                                     $total_line = $item_unidad->precio * $item_unidad->cantidad;
                                     $total_line_sin_iva = $item_unidad->precio_sin_iva * $item_unidad->cantidad;
                                     $descuento_unidad_prorateo = 0;
