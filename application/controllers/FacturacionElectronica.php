@@ -170,27 +170,18 @@ class facturacionElectronica extends MY_Controller
             print "Error: " . curl_error($ch);
         } else {
             $resoluciones = array();
-
             // Show me the result
             $transaction = json_decode($data, TRUE);
             if ($FACT_E_RESOLUCION_resolucion_id === false) {
                 $resoluciones = $transaction;
             } else {
-
-
                 foreach ($transaction as $res) {
-
-
                     if ($res['id'] == $FACT_E_RESOLUCION_resolucion_id) {
-
                         array_push($resoluciones, $res);
                     }
                 }
             }
-
-
             curl_close($ch);
-
             return $resoluciones;
         }
     }
@@ -1450,34 +1441,23 @@ class facturacionElectronica extends MY_Controller
                             'legal_monetary_totals' => $legal_monetary_totals,
                             'invoice_lines' => $invoice_lines,
                             'resolution_id' =>  $FACT_E_RESOLUCION_resolucion_id
-
-
-
                             //'payment_form' => $payments_forms,
-
-
                         );
-
                         if (!empty($nota)) {
                             $data['notes'] = array(array('text' => $nota));
                         }
                         $informartaxses = sizeof($tax_totals) > 0 ? true : false;
                         if ($informartaxses && $FACT_E_type_regime_id == '1') {
-
                             //ar_dump($tax_totals);
                             $data['tax_totals'] = $tax_totals;
                         }
-
                         if (sizeof($reference) > 0) {
                             $data['additional_document_reference'] = $reference;
                         }
-
                         //  var_dump($allowance_charges);
                         $informarcharges = sizeof($allowance_charges) > 0 ? true : false;
 
                         if ($informarcharges) {
-
-
                             //  var_dump($invoice_lines);
                             $data['allowance_charges'] = $allowance_charges;
                         }
@@ -1486,9 +1466,7 @@ class facturacionElectronica extends MY_Controller
                         //            var_dump($data);
                         $api_token = $this->session->userdata('FACT_E_API_TOKEN');
                         $FACT_E_test_set_id = $this->session->userdata('FACT_E_test_set_id');
-
                         //var_dump($data);
-
                         $FACT_E_API_DESTINO = $this->session->userdata('FACT_E_API_DESTINO');
                         $base_url = $FACT_E_API_DESTINO  == 'SOENAC' ? API_ENDPOINT : API_ENDPOINT_LATAM;
                         if (!empty($api_token)) {
@@ -1505,20 +1483,16 @@ class facturacionElectronica extends MY_Controller
                                     $url = $base_url . "/api/ubl2.1/contingency-billing/" . $testurl;
                                 }
                             }
-
-
                             $request_headers = array();
-
-
                             $request_headers[] = 'Content-Type: application/json';
                             $request_headers[] = 'Accept: application/json';
                             $request_headers[] = 'Authorization: Bearer ' . $api_token;
                             
                             $ch = curl_init();
                             //Kerigma
-                            echo json_encode($data);
-                            echo json_encode($url);
-                            die();
+                            //echo json_encode($data);
+                            //echo json_encode($url);
+                            //die();
                             curl_setopt($ch, CURLOPT_POST, 1);
                             curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
                             curl_setopt($ch, CURLOPT_URL, $url);
