@@ -1010,7 +1010,15 @@
         $(".date").datepicker({
 					format: 'dd-mm-yyyy'
         });
-        Venta.init(<?= count($venta) ?>, <?= json_encode($unidades_medida) ?>, <?= json_encode($droguerias) ?>, <?= json_encode($tipos_devolucion) ?>, <?= json_encode($tipos_venta) ?>, <?= json_encode($clientes) ?>, <?= $last_factura['documento_Numero'] ?>);
+        var documentoNumero = <?php echo isset($last_factura['documento_Numero']) ? json_encode($last_factura['documento_Numero']) : 'null'; ?>;
+
+        Venta.init(<?= count($venta) ?>, 
+            <?= json_encode($unidades_medida) ?>, 
+            <?= json_encode($droguerias) ?>, 
+            <?= json_encode($tipos_devolucion) ?>, 
+            <?= json_encode($tipos_venta) ?>, 
+            <?= json_encode($clientes) ?>, 
+            documentoNumero);
         App.sidebar('close-sidebar');
     });
 </script>

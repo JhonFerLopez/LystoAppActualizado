@@ -20,8 +20,8 @@ class cuentasPorPagar extends MY_Controller
         $this->load->model('cuentas_por_pagar/recibo_pago_proveedor_model');
         $this->load->model('pagos_ingreso/pagos_ingreso_model');
         $this->load->model('banco/banco_model');
-        $this->load->library('Pdf');
-        $this->load->library('phpExcel/PHPExcel.php');
+        //$this->load->library('Pdf');
+        //$this->load->library('phpExcel/PHPExcel.php');
     }
 
 

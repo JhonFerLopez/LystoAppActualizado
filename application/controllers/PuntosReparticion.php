@@ -9,8 +9,8 @@ class puntosReparticion extends MY_Controller
         $this->very_sesion();
         $this->load->model('consolidadodecargas/consolidado_model');
         $this->load->model('usuario/usuario_model');
-        $this->load->library('Pdf');
-        $this->load->library('phpExcel/PHPExcel.php');
+        //$this->load->library('Pdf');
+        //$this->load->library('phpExcel/PHPExcel.php');
 
 
     }

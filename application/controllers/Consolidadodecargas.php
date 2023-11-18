@@ -12,9 +12,9 @@ class consolidadodecargas extends MY_Controller
         $this->load->model('venta/venta_model');
         $this->load->model('banco/banco_model');
 
-        $this->load->library('Pdf');
+        //$this->load->library('Pdf');
         $this->load->library('phpword');
-        $this->load->library('phpExcel/PHPExcel.php');
+        //$this->load->library('phpExcel/PHPExcel.php');
 
     }
 

@@ -2798,27 +2798,26 @@ venta_anular.apertua_caja_id=" . $satatuscaja;
     //con anulaciones
     function get_total_by_forma_pago($condicion = false)
     {
-
-
         $query = "
-   SELECT  venta_id,  SUM(monto) as suma, SUM(total) AS total,  id_forma_pago, SUM(gravado) as gravado, SUM(excluido) as excluido, SUM(total_impuesto) AS iva,
-    SUM(total_otros_impuestos) AS otros_impuestos, SUM(descuento_valor) AS descuento_valor, 
-    SUM(descuento_porcentaje) AS descuento_porcentaje, COUNT(DISTINCT venta_backup.venta_id) AS num 
-    FROM ((SELECT DISTINCT venta_id, gravado, venta_backup.total,  
-   excluido AS excluido, total_impuesto, total_otros_impuestos, descuento_porcentaje, descuento_valor,
-    venta_status, fecha, venta_tipo    , monto, id_forma_pago
-     FROM `venta_backup` JOIN `venta_forma_pago` ON `venta_forma_pago`.`id_venta`=`venta_backup`.`venta_id` AND `monto`>0 
-    JOIN `tipo_venta` ON `tipo_venta`.`tipo_venta_id`=`venta_backup`.`venta_tipo` JOIN `condiciones_pago`
-     ON `tipo_venta`.`condicion_pago`=`condiciones_pago`.`id_condiciones` WHERE  `condiciones_pago`.`dias` = '0'  
-   
-     
-";
+					SELECT venta_id, SUM(monto) as suma, SUM(total) AS total,  
+						id_forma_pago, SUM(gravado) as gravado, SUM(excluido) as excluido, 
+						SUM(total_impuesto) AS iva, SUM(total_otros_impuestos) AS otros_impuestos, 
+						SUM(descuento_valor) AS descuento_valor, SUM(descuento_porcentaje) AS descuento_porcentaje, 
+						COUNT(DISTINCT venta_id) AS num 
+					FROM (
+						SELECT DISTINCT venta_id, gravado, venta_backup.total,  
+							excluido AS excluido, total_impuesto, total_otros_impuestos, descuento_porcentaje, descuento_valor,
+							venta_status, fecha, venta_tipo, monto, id_forma_pago
+						FROM `venta_backup` JOIN `venta_forma_pago` ON `venta_forma_pago`.`id_venta`=`venta_backup`.`venta_id` 
+							AND `monto`>0 
+						JOIN `tipo_venta` ON `tipo_venta`.`tipo_venta_id`=`venta_backup`.`venta_tipo` 
+						JOIN `condiciones_pago`	ON `tipo_venta`.`condicion_pago`=`condiciones_pago`.`id_condiciones` 
+						WHERE  `condiciones_pago`.`dias` = '0'  
+				";
         foreach ($condicion as $k => $v) {
-
-            $query .= " and " . $k . " '" . $v . "'";
+					$query .= " and " . $k . " '" . $v . "'";
         }
-        $query .= "  GROUP BY  venta_backup.venta_id ) venta_backup) ";
-
+        $query .= "  GROUP BY venta_backup.venta_id ) as venta_backup";
         //echo $query;
         $query = $this->db->query($query);
         //echo $this->db->last_query();
@@ -3473,7 +3472,7 @@ venta_anular.apertua_caja_id=" . $satatuscaja;
         $this->db->limit(1);
         $query = $this->db->get();
 
-        return $query->row_array();
+        return ($query->row_array()? $query->row_array() : array());
     }
 
     function get_first($where = false)

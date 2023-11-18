@@ -8,8 +8,8 @@ class mapaVentas extends MY_Controller
         parent::__construct();
         //$this->very_sesion();
         $this->load->model('consolidadodecargas/consolidado_model');
-        $this->load->library('Pdf');
-        $this->load->library('phpExcel/PHPExcel.php');
+        //$this->load->library('Pdf');
+        //$this->load->library('phpExcel/PHPExcel.php');
         $this->very_sesion();
 
 

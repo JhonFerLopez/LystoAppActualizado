@@ -9,8 +9,8 @@ class tipo_proveedor extends MY_Controller
         //$this->load->model('caja/caja_model','c');
         $this->load->model('tipo_proveedor/tipo_proveedor_model');
 
-        $this->load->library('Pdf');
-        $this->load->library('phpExcel/PHPExcel.php');
+        //$this->load->library('Pdf');
+        //$this->load->library('phpExcel/PHPExcel.php');
 
         $this->very_sesion();
     }

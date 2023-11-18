@@ -6,8 +6,8 @@ class tipo_producto extends MY_Controller {
         parent::__construct();
         //$this->load->model('caja/caja_model','c');
         $this->load->model('tipo_producto/tipo_producto_model', 'tipo_producto');
-        $this->load->library('Pdf');
-        $this->load->library('phpExcel/PHPExcel.php');
+        //$this->load->library('Pdf');
+        //$this->load->library('phpExcel/PHPExcel.php');
 
         $this->very_sesion();
     }

@@ -40,9 +40,9 @@ class ReportesExcel extends MY_Controller
         //   $this->load->library('phpword');
         $this->load->library('Request');
         $this->load->model('cajas/StatusCajaModel');
-        $this->load->library('Pdf');
+        //$this->load->library('Pdf');
         $this->load->library('session');
-        $this->load->library('phpExcel/PHPExcel.php');
+        //$this->load->library('phpExcel/PHPExcel.php');
 
         $this->very_sesion();
 
@@ -2739,7 +2739,14 @@ function excelInformeCompras()
             }
 
             $printer->text(" Venta Nº:");
-            $printer->text(str_pad(isset($ventas[0]['resolucion_prefijo']) ? isset($ventas[0]['resolucion_prefijo']) : '' . isset($ventas[0]['numero']) ? $ventas[0]['numero'] : '', 10));
+            $printer->text(
+                str_pad(
+                    (isset($ventas[0]['resolucion_prefijo']) 
+                    ? isset($ventas[0]['resolucion_prefijo']) 
+                    : '' . isset($ventas[0]['numero']) ) 
+                    ? $ventas[0]['numero'] : ''
+                , 10)
+            );
             $printer->feed(1);
 
             $printer->text(str_pad("Fecha", 12));
@@ -2906,7 +2913,14 @@ function excelInformeCompras()
                     }
 
                     $printer->text(" FACTURA DE VENTA Nº:");
-                    $printer->text(str_pad(isset($ventas[0]['resolucion_prefijo']) ? isset($ventas[0]['resolucion_prefijo']) : '' . isset($ventas[0]['numero']) ? $ventas[0]['numero'] : '', 10));
+                    $printer->text(
+                        str_pad(
+                            (isset($ventas[0]['resolucion_prefijo']) 
+                            ? isset($ventas[0]['resolucion_prefijo']) 
+                            : '' . isset($ventas[0]['numero']) ) 
+                            ? $ventas[0]['numero'] : ''
+                        , 10)
+                    );
                     $printer->feed(1);
 
                     $printer->text(str_pad("Fecha", 12));

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * CodeIgniter
  *
@@ -219,7 +220,8 @@ switch (ENVIRONMENT)
 		echo 'Your system folder path does not appear to be set correctly. Please open the following file and correct this: '.pathinfo(__FILE__, PATHINFO_BASENAME);
 		exit(3); // EXIT_CONFIG
 	}
-
+	//echo  "<br>system_path ";
+	//print_r($system_path);
 /*
  * -------------------------------------------------------------------
  *  Now that we know the path, set the main path constants
@@ -267,22 +269,27 @@ switch (ENVIRONMENT)
 		echo 'Your application folder path does not appear to be set correctly. Please open the following file and correct this: '.SELF;
 		exit(3); // EXIT_CONFIG
 	}
-
+	//echo  "<br>application_folder ";
+	//print_r($application_folder.DIRECTORY_SEPARATOR);
 	define('APPPATH', $application_folder.DIRECTORY_SEPARATOR);
 
 	// The path to the "views" directory
 	if ( ! isset($view_folder[0]) && is_dir(APPPATH.'views'.DIRECTORY_SEPARATOR))
 	{
+		//echo "1";
 		$view_folder = APPPATH.'views';
 	}
 	elseif (is_dir($view_folder))
 	{
+		//echo "2";
 		if (($_temp = realpath($view_folder)) !== FALSE)
 		{
+			//echo "3";
 			$view_folder = $_temp;
 		}
 		else
 		{
+			//echo "4";
 			$view_folder = strtr(
 				rtrim($view_folder, '/\\'),
 				'/\\',
@@ -292,6 +299,7 @@ switch (ENVIRONMENT)
 	}
 	elseif (is_dir(APPPATH.$view_folder.DIRECTORY_SEPARATOR))
 	{
+		//echo "5";
 		$view_folder = APPPATH.strtr(
 			trim($view_folder, '/\\'),
 			'/\\',
@@ -300,11 +308,13 @@ switch (ENVIRONMENT)
 	}
 	else
 	{
+		//echo "6";
 		header('HTTP/1.1 503 Service Unavailable.', TRUE, 503);
 		echo 'Your view folder path does not appear to be set correctly. Please open the following file and correct this: '.SELF;
 		exit(3); // EXIT_CONFIG
 	}
-
+	//echo  "<br>view_folder ";
+	//print_r($view_folder.DIRECTORY_SEPARATOR);
 	define('VIEWPATH', $view_folder.DIRECTORY_SEPARATOR);
 
 /*

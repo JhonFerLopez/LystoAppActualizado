@@ -8,8 +8,8 @@ class metodosdepago extends MY_Controller
         parent::__construct();
 
         $this->load->model('metodosdepago/metodos_pago_model');
-        $this->load->library('Pdf');
-        $this->load->library('phpExcel/PHPExcel.php');
+        //$this->load->library('Pdf');
+        //$this->load->library('phpExcel/PHPExcel.php');
 
 
         $this->load->model('impuesto/impuestos_model');

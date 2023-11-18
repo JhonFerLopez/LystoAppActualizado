@@ -43,9 +43,9 @@ class Reportes extends MY_Controller
         $this->load->model('componentes/componentes_model');
 
         $this->load->model('cajas/StatusCajaModel');
-        $this->load->library('Pdf');
+        //$this->load->library('Pdf');
         $this->load->library('session');
-        $this->load->library('phpExcel/PHPExcel.php');
+        //$this->load->library('phpExcel/PHPExcel.php');
 
         $this->very_sesion();
 
@@ -2508,7 +2508,14 @@ class Reportes extends MY_Controller
             }
 
             $printer->text(" Venta Nº:");
-            $printer->text(str_pad(isset($ventas[0]['resolucion_prefijo']) ? isset($ventas[0]['resolucion_prefijo']) : '' . isset($ventas[0]['numero']) ? $ventas[0]['numero'] : '', 10));
+            $printer->text(
+                str_pad(
+                    (isset($ventas[0]['resolucion_prefijo']) 
+                    ? isset($ventas[0]['resolucion_prefijo']) 
+                    : '' . isset($ventas[0]['numero']) ) 
+                    ? $ventas[0]['numero'] : ''
+                , 10)
+            );
             $printer->feed(1);
 
             $printer->text(str_pad("Fecha", 12));
@@ -2675,7 +2682,14 @@ class Reportes extends MY_Controller
                     }
 
                     $printer->text(" FACTURA DE VENTA Nº:");
-                    $printer->text(str_pad(isset($ventas[0]['resolucion_prefijo']) ? isset($ventas[0]['resolucion_prefijo']) : '' . isset($ventas[0]['numero']) ? $ventas[0]['numero'] : '', 10));
+                    $printer->text(
+                        str_pad(
+                            (isset($ventas[0]['resolucion_prefijo']) 
+                            ? isset($ventas[0]['resolucion_prefijo']) 
+                            : '' . isset($ventas[0]['numero']) ) 
+                            ? $ventas[0]['numero'] : ''
+                        , 10)
+                    );
                     $printer->feed(1);
 
                     $printer->text(str_pad("Fecha", 12));
@@ -2910,7 +2924,7 @@ class Reportes extends MY_Controller
                     $data['productos'][$cont]['nombre_impuesto'] = "";
                     $impuesto = $this->impuestos_model->get_by('id_impuesto', $data['productos'][$cont]['producto_impuesto']);
 
-                    if (sizeof($impuesto) > 0) {
+                    if (is_array($impuesto) && sizeof($impuesto) > 0) {
                         $data['productos'][$cont]['nombre_impuesto'] = $impuesto['nombre_impuesto'];
                     }
 

@@ -105,9 +105,11 @@ class MY_Controller extends CI_Controller
         $this->session->set_userdata('control_amb_actual', '');
         $this->session->set_userdata('notif_control_hoy','');
         //busco el control ambioental del mes actual
+        $mes = date('m'); // Número del mes que deseas obtener (ejemplo: septiembre)
+        $ultimoDiaMes = date('Y-m-t', strtotime(date('Y') . '-' . $mes . '-01'));
         $where=array(
             'periodo >='=>date('Y-m-01'),
-            'periodo <='=>date('Y-m-31'),
+            'periodo <='=>$ultimoDiaMes,
         );
         $control = $this->control_ambiental_model->get_only_control($where);
 

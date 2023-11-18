@@ -6,6 +6,7 @@ class producto extends MY_Controller
 {
 
     private $columnas = array();
+    private $_producto;
 
     function __construct()
     {
@@ -39,10 +40,11 @@ class producto extends MY_Controller
         $this->load->model('inventario/inventario_model');
         $this->load->model('system_logs/systemLogsModel');
 
-        $this->load->library('Pdf');
-        $this->load->library('phpExcel/PHPExcel.php');
+        //$this->load->library('Pdf');
+        //$this->load->library('phpExcel/PHPExcel.php');
         $this->very_sesion();
 
+        $this->_producto = new ProductoElo();
 
         $this->columnas = $this->columnas_model->get_by('tabla', 'producto');
     }
@@ -734,14 +736,14 @@ class producto extends MY_Controller
 
 
             if (empty($id)) {
-                $producto_before= ProductoElo::with(ProductoElo::allTablesRelations())->first();
+                $producto_before= $this->_producto->with($this->_producto->allTablesRelations())->first();
 
                 $rs = $this->producto_model->insertar($producto, $medidas, $unidades, $codigos_barra, $stock_minimo, $stock_maximo, $componentes, $productos_paquete_array);
                 $id = $rs;
             } else {
 
                 $producto['producto_id'] = $id;
-                $producto_before= ProductoElo::where('producto_id',$id)->with(ProductoElo::allTablesRelations())->first();
+                $producto_before= $this->_producto->where('producto_id',$id)->with($this->_producto->allTablesRelations())->first();
                 $rs = $this->producto_model->update($producto, $medidas, $unidades, $codigos_barra, $stock_minimo, $stock_maximo, $componentes, $productos_paquete_array);
 
             }
@@ -824,7 +826,7 @@ class producto extends MY_Controller
                     }
                 }
 
-                $producto_after= ProductoElo::where('producto_id',$id)->with(ProductoElo::allTablesRelations())->first();
+                $producto_after= $this->_producto->where('producto_id',$id)->with($this->_producto->allTablesRelations())->first();
 
                 //esto lo hago porque desde compra creo un input que se llama estasencompra
                 //para saber cuando estoy creando un producto desde compra.
@@ -906,7 +908,7 @@ class producto extends MY_Controller
         if (count($validainventario) < 1 || $tieneinventario == false) {
 
 
-            $producto_before= ProductoElo::where('producto_id',$id)->with(ProductoElo::allTablesRelations())->first();
+            $producto_before= $this->_producto->where('producto_id',$id)->with($this->_producto->allTablesRelations())->first();
 
             $producto = array(
                 'producto_id' => $id,
@@ -921,7 +923,7 @@ class producto extends MY_Controller
                 $borrar_barra = $this->producto_barra_model->delete($where);
 
                 $json['success'] = 'Se ha eliminado exitosamente';
-                $producto_after= ProductoElo::where('producto_id',$id)->with(ProductoElo::allTablesRelations())->first();
+                $producto_after= $this->_producto->where('producto_id',$id)->with($this->_producto->allTablesRelations())->first();
 
                 $log = array(
                     'usuario' => $this->session->userdata('nUsuCodigo'),

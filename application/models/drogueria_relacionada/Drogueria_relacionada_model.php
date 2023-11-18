@@ -27,7 +27,7 @@ class drogueria_relacionada_model extends CI_Model
     {
         $this->db->where($array);
         $query = $this->db->get($this->table);
-        return $query->row_array();
+        return ($query->row_array()? $query->row_array() : array());
     }
 
     function set($data)

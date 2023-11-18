@@ -27,8 +27,8 @@ class ingresos extends MY_Controller
 
 
 //pd producto pv proveedor
-        $this->load->library('Pdf');
-        $this->load->library('phpExcel/PHPExcel.php');
+        //$this->load->library('Pdf');
+        //$this->load->library('phpExcel/PHPExcel.php');
         $this->very_sesion();
     }
 
@@ -363,7 +363,7 @@ class ingresos extends MY_Controller
                 echo ' - Unknown error';
                 break;
         }
-        if (count($lst_producto) < 1) {
+        if (is_array($lst_producto) && sizeof($lst_producto) < 1) {
             $retorno = "Debe seleccionar al menos un producto";
         }
 

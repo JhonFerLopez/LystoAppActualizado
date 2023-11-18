@@ -10,8 +10,8 @@ class tipo_venta extends MY_Controller
         $this->load->model('tipo_venta/tipo_venta_model');
         $this->load->model('condicionespago/condiciones_pago_model');
 
-        $this->load->library('Pdf');
-        $this->load->library('phpExcel/PHPExcel.php');
+        //$this->load->library('Pdf');
+        //$this->load->library('phpExcel/PHPExcel.php');
         $this->very_sesion();
     }
 

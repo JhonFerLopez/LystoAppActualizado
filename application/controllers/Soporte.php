@@ -39,9 +39,9 @@ class Soporte extends MY_Controller
         //   $this->load->library('phpword');
         $this->load->model('system_logs/systemLogsModel');
         $this->load->model('cajas/StatusCajaModel');
-        $this->load->library('Pdf');
+        //$this->load->library('Pdf');
         $this->load->library('session');
-        $this->load->library('phpExcel/PHPExcel.php');
+        //$this->load->library('phpExcel/PHPExcel.php');
         $this->load->library("NuSoap_lib");
         $this->very_sesion();
 

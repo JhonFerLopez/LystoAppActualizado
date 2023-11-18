@@ -15,8 +15,8 @@ class proveedor extends MY_Controller
         $this->load->model('pais/pais_model');
         $this->load->model('estado/estado_model');
         $this->load->model('ciudad/ciudad_model');
-        $this->load->library('Pdf');
-        $this->load->library('phpExcel/PHPExcel.php');
+        //$this->load->library('Pdf');
+        //$this->load->library('phpExcel/PHPExcel.php');
     }
 
 

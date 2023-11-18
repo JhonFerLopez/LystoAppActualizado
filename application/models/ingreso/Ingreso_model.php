@@ -25,7 +25,7 @@ class ingreso_model extends CI_Model
 	{
 
 		$status = INGRESO_COMPLETADO;
-		if ($post['status'] == INGRESO_PENDIENTE) {
+		if (isset($post['status']) && $post['status'] == INGRESO_PENDIENTE) {
 			$status = INGRESO_PENDIENTE;
 		}
 		$proveedor = $post['cboProveedor'];

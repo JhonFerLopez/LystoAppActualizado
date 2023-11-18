@@ -1671,7 +1671,6 @@
           messagingSenderId: '<?= $this->session->userdata('FIREBASE_MESSAGINGSENDERID'); ?>',
           appId: '<?= $this->session->userdata('FIREBASE_APPID'); ?>',
       };
-      
       // Initialize Firebase
       firebase.initializeApp(firebaseConfig);
       
@@ -2136,23 +2135,18 @@
                   alert('Thanks for your comment!');
               }
           })*/
-        var data = <?= json_encode($licencia) ?>;
+        var data = <?= json_encode($licencia) ?>;        
         var callmapadomicilio = '<?= $callmapadomicilio ?>';
-    
-        var remaining = parseInt(data.remaining);
-    
-        console.log(remaining);
-    
+        var remaining = parseInt(data.remaining);        
         var diasrenovar = 8 + remaining;
+
         if (remaining <= 5 && remaining < 0) {
-    
-            Utilities.alertModal('Su licencia ha expirado hace ' + remaining + ' dias, recuerde renovar su licencia antes de ' +
-                diasrenovar + ' dias o no podrá seguir usando el sistema', 'warning', false);
+          Utilities.alertModal('Su licencia ha expirado hace ' + remaining + ' dias, recuerde renovar su licencia antes de ' +
+            diasrenovar + ' dias o no podrá seguir usando el sistema', 'warning', false);
         }
     
         if (remaining <= 5 && remaining > 0) {
-    
-            Utilities.alertModal('Su licencia está a ' + remaining + ' dias de expirar', 'warning', false);
+          Utilities.alertModal('Su licencia está a ' + remaining + ' dias de expirar', 'warning', false);
         }
     
         //con esto mando a llamar a la vistadel mapa de los domiciliarios si es el caso

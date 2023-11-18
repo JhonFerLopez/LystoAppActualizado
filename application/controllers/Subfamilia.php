@@ -8,8 +8,8 @@ class subfamilia extends MY_Controller
         parent::__construct();
         //$this->load->model('caja/caja_model','c');
         $this->load->model('subfamilia/subfamilias_model');
-        $this->load->library('Pdf');
-        $this->load->library('phpExcel/PHPExcel.php');
+        //$this->load->library('Pdf');
+        //$this->load->library('phpExcel/PHPExcel.php');
 
         $this->very_sesion();
     }

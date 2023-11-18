@@ -32,9 +32,9 @@ class cartera extends MY_Controller
         $this->load->model('resolucion/resolucion_model');
         $this->load->model('impuesto/impuestos_model');
         $this->load->model('cajas/StatusCajaModel');
-        $this->load->library('Pdf');
+        //$this->load->library('Pdf');
         $this->load->library('session');
-        $this->load->library('phpExcel/PHPExcel.php');
+        //$this->load->library('phpExcel/PHPExcel.php');
         $this->very_sesion();
     }
 
